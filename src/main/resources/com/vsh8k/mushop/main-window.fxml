@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ButtonBar?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.MenuButton?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Text?>
+
+<TabPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" tabClosingPolicy="UNAVAILABLE" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.vsh8k.mushop.fxControllers.MainWindow">
+  <tabs>
+    <Tab text="Products">
+      <content>
+        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+               <children>
+                  <ListView layoutX="14.0" layoutY="11.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="310.0" prefWidth="200.0" />
+                  <ButtonBar layoutX="9.0" layoutY="321.0" prefHeight="40.0" prefWidth="182.0">
+                    <buttons>
+                      <Button mnemonicParsing="false" text="Add" textAlignment="CENTER" />
+                        <Button alignment="CENTER" minWidth="49.0" mnemonicParsing="false" prefHeight="24.0" text="Remove" textAlignment="CENTER" />
+                    </buttons>
+                  </ButtonBar>
+                  <Button fx:id="updateButton" layoutX="378.0" layoutY="329.0" mnemonicParsing="false" onAction="#updateButtonOnClick" text="Update" />
+                  <TextField fx:id="artistField" layoutX="226.0" layoutY="14.0" promptText="Artist" />
+                  <TextField layoutX="406.0" layoutY="14.0" promptText="Release Year" />
+                  <TextField layoutX="226.0" layoutY="54.0" promptText="Album" />
+                  <TextField layoutX="406.0" layoutY="54.0" promptText="Label" />
+                  <TextField layoutX="226.0" layoutY="93.0" promptText="Track No" />
+                  <TextField layoutX="406.0" layoutY="93.0" promptText="Length" />
+                  <TextField layoutX="226.0" layoutY="154.0" promptText="Media" />
+                  <TextField layoutX="406.0" layoutY="154.0" promptText="Sleeve" />
+                  <Text layoutX="378.0" layoutY="141.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Grade" />
+                  <MenuButton layoutX="365.0" layoutY="200.0" mnemonicParsing="false" text="Type">
+                    <items>
+                      <MenuItem mnemonicParsing="false" text="CD" />
+                      <MenuItem mnemonicParsing="false" text="Vinyl" />
+                        <MenuItem mnemonicParsing="false" text="Cassete" />
+                    </items>
+                  </MenuButton>
+                  <TextField layoutX="229.0" layoutY="259.0" promptText="Qty." />
+                  <TextField layoutX="409.0" layoutY="259.0" promptText="Sleeve" />
+               </children></AnchorPane>
+      </content>
+    </Tab>
+    <Tab text="Users (Not Working)">
+      <content>
+        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+      </content>
+    </Tab>
+  </tabs>
+</TabPane>
