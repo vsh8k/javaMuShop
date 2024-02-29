@@ -3,6 +3,8 @@ module com.javacourse.courseprojectfx {
     requires javafx.fxml;
     requires lombok;
 
+
+
     requires org.kordamp.bootstrapfx.core;
 
     opens com.vsh8k.mushop to javafx.fxml;
