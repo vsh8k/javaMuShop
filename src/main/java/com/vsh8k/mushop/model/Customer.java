@@ -2,7 +2,6 @@ package com.vsh8k.mushop.model;
 
 import lombok.Getter;
 import lombok.Setter;
-
 import java.time.LocalDate;
 
 @Getter

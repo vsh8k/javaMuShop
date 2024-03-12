@@ -42,9 +42,33 @@
       </content>
     </Tab>
     <Tab text="Users (Not Implemented)">
-      <content>
-        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
-      </content>
+        <content>
+            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="371.0" prefWidth="786.0">
+                <children>
+                    <ListView fx:id="productList" layoutX="14.0" layoutY="11.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" onMouseClicked="#loadProductData" prefHeight="346.0" prefWidth="227.0" />
+                    <Button fx:id="updateButton" layoutX="397.0" layoutY="331.0" mnemonicParsing="false" onAction="#updateRecord" text="Update" />
+                    <TextField fx:id="artistField" layoutX="257.0" layoutY="16.0" promptText="Artist" />
+                    <TextField fx:id="yearField" layoutX="437.0" layoutY="16.0" promptText="Release Year" />
+                    <TextField fx:id="albumField" layoutX="257.0" layoutY="56.0" promptText="Album" />
+                    <TextField fx:id="labelField" layoutX="437.0" layoutY="56.0" promptText="Label" />
+                    <TextField fx:id="tracksField" layoutX="257.0" layoutY="95.0" promptText="Track No" />
+                    <TextField fx:id="lengthField" layoutX="437.0" layoutY="95.0" promptText="Length" />
+                    <TextField fx:id="gradeMField" layoutX="257.0" layoutY="156.0" promptText="Media" />
+                    <TextField fx:id="gradeSField" layoutX="437.0" layoutY="156.0" promptText="Sleeve" />
+                    <Text layoutX="409.0" layoutY="140.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Grade" />
+                    <MenuButton fx:id="typeSelector" layoutX="396.0" layoutY="202.0" mnemonicParsing="false" text="Type">
+                        <items>
+                            <MenuItem fx:id="typeCD" mnemonicParsing="false" onAction="#selectTypeCD" text="CD" />
+                            <MenuItem fx:id="typeVinyl" mnemonicParsing="false" onAction="#selectTypeVinyl" text="Vinyl" />
+                            <MenuItem fx:id="typeCass" mnemonicParsing="false" onAction="#selectTypeCass" text="Cassete" />
+                        </items>
+                    </MenuButton>
+                    <TextField fx:id="qtyField" layoutX="260.0" layoutY="261.0" promptText="Qty." />
+                    <TextField fx:id="priceField" layoutX="440.0" layoutY="261.0" promptText="Price" />
+                    <Button fx:id="addButton" layoutX="325.0" layoutY="331.0" mnemonicParsing="false" onAction="#addButtonOnClick" text="Add" textAlignment="CENTER" />
+                    <Button fx:id="deleteButton" alignment="CENTER" layoutX="480.0" layoutY="329.0" minWidth="49.0" mnemonicParsing="false" onAction="#deleteRecord" prefHeight="24.0" text="Remove" textAlignment="CENTER" />
+                </children></AnchorPane>
+        </content>
     </Tab>
   </tabs>
 </TabPane>
