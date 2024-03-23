@@ -1,10 +1,10 @@
 package com.vsh8k.mushop.fxControllers;
 
 
-import com.vsh8k.mushop.model.CD;
-import com.vsh8k.mushop.model.Cass;
-import com.vsh8k.mushop.model.Product;
-import com.vsh8k.mushop.model.Vinyl;
+import com.vsh8k.mushop.model.Shop.CD;
+import com.vsh8k.mushop.model.Shop.Cass;
+import com.vsh8k.mushop.model.Shop.Product;
+import com.vsh8k.mushop.model.Shop.Vinyl;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 

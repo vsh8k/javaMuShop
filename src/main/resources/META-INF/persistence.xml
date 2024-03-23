@@ -7,7 +7,7 @@
 
     <persistence-unit name="YourPersistenceUnitName">
         <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
-        <class>com.vsh8k.mushop.model.Media</class>
+        <class>com.vsh8k.mushop.model.Shop.Media</class>
         <class>com.vsh8k.mushop.model.stalas.StalasEntity</class>
         <!-- Add more entity classes if needed -->
 

@@ -1,5 +1,6 @@
-package com.vsh8k.mushop.model;
+package com.vsh8k.mushop.model.Shop;
 
+import com.vsh8k.mushop.model.AccountSystem.Manager;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -13,7 +14,7 @@ public class Warehouse {
     private String address;
     private List<Product> productList;
     private List<Manager> employees;
-    private City city;
+    private String city;
     private LocalDate dateCreated;
     private LocalDate dateModified;
 }

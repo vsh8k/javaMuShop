@@ -1,5 +1,6 @@
-package com.vsh8k.mushop.model;
+package com.vsh8k.mushop.model.Shop;
 
+import com.vsh8k.mushop.model.AccountSystem.User;
 import lombok.Getter;
 import lombok.Setter;
 

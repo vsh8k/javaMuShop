@@ -1,4 +1,4 @@
-package com.vsh8k.mushop.model;
+package com.vsh8k.mushop.model.Shop;
 
 import lombok.Getter;
 import lombok.Setter;

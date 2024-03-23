@@ -1,7 +1,7 @@
 package com.vsh8k.mushop.fxControllers;
 
-import com.vsh8k.mushop.model.Customer;
-import com.vsh8k.mushop.model.User;
+import com.vsh8k.mushop.model.AccountSystem.Customer;
+import com.vsh8k.mushop.model.AccountSystem.User;
 import javafx.scene.control.ListView;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;

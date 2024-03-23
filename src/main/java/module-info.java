@@ -5,6 +5,7 @@ module com.javacourse.courseprojectfx {
 
 
     requires org.kordamp.bootstrapfx.core;
+    requires jakarta.persistence;
 
     opens com.vsh8k.mushop to javafx.fxml;
     exports com.vsh8k.mushop;
