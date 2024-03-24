@@ -65,7 +65,7 @@ public class LoginWindow {
         Hyperlink createAccount = new Hyperlink("Click here");
         createAccount.setOnAction(actionEvent -> {
             System.out.println("Registracijos mygtukas!");
-            FXMLLoader loader = new FXMLLoader(mainApplication.class.getResource("register-window.fxml"));
+            FXMLLoader loader = new FXMLLoader(mainApplication.class.getResource("registration-window.fxml"));
             try {
                 Parent root = loader.load();
                 MainWindow mainWindowController = loader.getController();
