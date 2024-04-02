@@ -14,70 +14,11 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Font?>
-<?import javafx.scene.text.Text?>
 
 <TabPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="886.0" tabClosingPolicy="UNAVAILABLE" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.vsh8k.mushop.fxControllers.MainWindow">
   <tabs>
-      <Tab text="Store">
-         <content>
-            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="371.0" prefWidth="786.0">
-               <children>
-                  <ListView fx:id="productList1" layoutX="14.0" layoutY="11.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" onMouseClicked="#loadProductData" prefHeight="346.0" prefWidth="227.0" />
-                  <Button fx:id="updateButton1" layoutX="397.0" layoutY="331.0" mnemonicParsing="false" onAction="#updateRecord" text="Update" />
-                  <TextField fx:id="artistField1" layoutX="257.0" layoutY="16.0" promptText="Artist" />
-                  <TextField fx:id="yearField1" layoutX="437.0" layoutY="16.0" promptText="Release Year" />
-                  <TextField fx:id="albumField1" layoutX="257.0" layoutY="56.0" promptText="Album" />
-                  <TextField fx:id="labelField1" layoutX="437.0" layoutY="56.0" promptText="Label" />
-                  <TextField fx:id="tracksField1" layoutX="257.0" layoutY="95.0" promptText="Track No" />
-                  <TextField fx:id="lengthField1" layoutX="437.0" layoutY="95.0" promptText="Length" />
-                  <TextField fx:id="gradeMField1" layoutX="257.0" layoutY="156.0" promptText="Media" />
-                  <TextField fx:id="gradeSField1" layoutX="437.0" layoutY="156.0" promptText="Sleeve" />
-                  <Text layoutX="409.0" layoutY="140.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Grade" />
-                  <MenuButton fx:id="typeSelector1" layoutX="396.0" layoutY="202.0" mnemonicParsing="false" text="Type">
-                     <items>
-                        <MenuItem fx:id="typeCD1" mnemonicParsing="false" onAction="#selectTypeCD" text="CD" />
-                        <MenuItem fx:id="typeVinyl1" mnemonicParsing="false" onAction="#selectTypeVinyl" text="Vinyl" />
-                        <MenuItem fx:id="typeCass1" mnemonicParsing="false" onAction="#selectTypeCass" text="Cassete" />
-                     </items>
-                  </MenuButton>
-                  <TextField fx:id="qtyField1" layoutX="260.0" layoutY="261.0" promptText="Qty." />
-                  <TextField fx:id="priceField1" layoutX="440.0" layoutY="261.0" promptText="Price" />
-                  <Button fx:id="addButton1" layoutX="325.0" layoutY="331.0" mnemonicParsing="false" onAction="#addButtonOnClick" text="Add" textAlignment="CENTER" />
-                  <Button fx:id="deleteButton1" alignment="CENTER" layoutX="480.0" layoutY="329.0" minWidth="49.0" mnemonicParsing="false" onAction="#deleteRecord" prefHeight="24.0" text="Remove" textAlignment="CENTER" />
-               </children>
-            </AnchorPane>
-         </content>
-      </Tab>
-      <Tab text="Cart">
-         <content>
-            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="371.0" prefWidth="786.0">
-               <children>
-                  <ListView fx:id="productList11" layoutX="14.0" layoutY="11.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" onMouseClicked="#loadProductData" prefHeight="346.0" prefWidth="227.0" />
-                  <Button fx:id="updateButton11" layoutX="397.0" layoutY="331.0" mnemonicParsing="false" onAction="#updateRecord" text="Update" />
-                  <TextField fx:id="artistField11" layoutX="257.0" layoutY="16.0" promptText="Artist" />
-                  <TextField fx:id="yearField11" layoutX="437.0" layoutY="16.0" promptText="Release Year" />
-                  <TextField fx:id="albumField11" layoutX="257.0" layoutY="56.0" promptText="Album" />
-                  <TextField fx:id="labelField11" layoutX="437.0" layoutY="56.0" promptText="Label" />
-                  <TextField fx:id="tracksField11" layoutX="257.0" layoutY="95.0" promptText="Track No" />
-                  <TextField fx:id="lengthField11" layoutX="437.0" layoutY="95.0" promptText="Length" />
-                  <TextField fx:id="gradeMField11" layoutX="257.0" layoutY="156.0" promptText="Media" />
-                  <TextField fx:id="gradeSField11" layoutX="437.0" layoutY="156.0" promptText="Sleeve" />
-                  <Text layoutX="409.0" layoutY="140.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Grade" />
-                  <MenuButton fx:id="typeSelector11" layoutX="396.0" layoutY="202.0" mnemonicParsing="false" text="Type">
-                     <items>
-                        <MenuItem fx:id="typeCD11" mnemonicParsing="false" onAction="#selectTypeCD" text="CD" />
-                        <MenuItem fx:id="typeVinyl11" mnemonicParsing="false" onAction="#selectTypeVinyl" text="Vinyl" />
-                        <MenuItem fx:id="typeCass11" mnemonicParsing="false" onAction="#selectTypeCass" text="Cassete" />
-                     </items>
-                  </MenuButton>
-                  <TextField fx:id="qtyField11" layoutX="260.0" layoutY="261.0" promptText="Qty." />
-                  <TextField fx:id="priceField11" layoutX="440.0" layoutY="261.0" promptText="Price" />
-                  <Button fx:id="addButton11" layoutX="325.0" layoutY="331.0" mnemonicParsing="false" onAction="#addButtonOnClick" text="Add" textAlignment="CENTER" />
-                  <Button fx:id="deleteButton11" alignment="CENTER" layoutX="480.0" layoutY="329.0" minWidth="49.0" mnemonicParsing="false" onAction="#deleteRecord" prefHeight="24.0" text="Remove" textAlignment="CENTER" />
-               </children>
-            </AnchorPane>
-         </content>
-      </Tab>
+      <Tab text="Store" />
+      <Tab text="Cart" />
     <Tab text="Products">
       <content>
         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="371.0" prefWidth="786.0">
@@ -97,8 +38,8 @@
                             <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                           </columnConstraints>
                           <rowConstraints>
-                            <RowConstraints maxHeight="306.0" minHeight="10.0" prefHeight="306.0" vgrow="SOMETIMES" />
-                            <RowConstraints maxHeight="118.0" minHeight="0.0" prefHeight="58.0" vgrow="SOMETIMES" />
+                            <RowConstraints maxHeight="333.0" minHeight="10.0" prefHeight="325.0" vgrow="SOMETIMES" />
+                            <RowConstraints maxHeight="118.0" minHeight="0.0" prefHeight="45.0" vgrow="SOMETIMES" />
                           </rowConstraints>
                            <children>
                               <GridPane GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER">
@@ -111,9 +52,18 @@
                                   <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                 </rowConstraints>
                                  <children>
-                                  <Button fx:id="addButton" mnemonicParsing="false" onAction="#addButtonOnClick" text="Add" textAlignment="CENTER" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
-                                    <Button fx:id="deleteButton" alignment="CENTER" minWidth="49.0" mnemonicParsing="false" onAction="#deleteRecord" prefHeight="24.0" text="Remove" textAlignment="CENTER" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
-                                    <Button fx:id="updateButton" mnemonicParsing="false" onAction="#updateRecord" text="Update" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
+                                  <Button fx:id="addButton" mnemonicParsing="false" onAction="#addButtonOnClick" text="Add" textAlignment="CENTER" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
+                                       <GridPane.margin>
+                                          <Insets bottom="5.0" />
+                                       </GridPane.margin></Button>
+                                    <Button fx:id="deleteButton" alignment="CENTER" minWidth="49.0" mnemonicParsing="false" onAction="#deleteRecord" prefHeight="24.0" text="Remove" textAlignment="CENTER" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
+                                       <GridPane.margin>
+                                          <Insets bottom="5.0" />
+                                       </GridPane.margin></Button>
+                                    <Button fx:id="updateButton" mnemonicParsing="false" onAction="#updateRecord" text="Update" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
+                                       <GridPane.margin>
+                                          <Insets bottom="5.0" />
+                                       </GridPane.margin></Button>
                                  </children>
                               </GridPane>
                               <GridPane>
@@ -123,6 +73,8 @@
                                 <rowConstraints>
                                   <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                   <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                     <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                     <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                     <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
@@ -201,27 +153,27 @@
                                           <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                        </rowConstraints>
                                        <children>
-                                          <MenuButton maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="Media Grade" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
+                                          <MenuButton fx:id="mediaGradeSelector" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="Media Grade" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
                                             <items>
-                                              <MenuItem mnemonicParsing="false" text="Mint" />
-                                              <MenuItem mnemonicParsing="false" text="Near Mint" />
-                                                <MenuItem mnemonicParsing="false" text="Very Good+" />
-                                                <MenuItem mnemonicParsing="false" text="Very Good" />
-                                                <MenuItem mnemonicParsing="false" text="Good" />
-                                                <MenuItem mnemonicParsing="false" text="Fair" />
+                                              <MenuItem fx:id="mgs1" mnemonicParsing="false" text="Mint" />
+                                              <MenuItem fx:id="mgs2" mnemonicParsing="false" text="Near Mint" />
+                                                <MenuItem fx:id="mgs3" mnemonicParsing="false" text="Very Good+" />
+                                                <MenuItem fx:id="mgs4" mnemonicParsing="false" text="Very Good" />
+                                                <MenuItem fx:id="mgs5" mnemonicParsing="false" text="Good" />
+                                                <MenuItem fx:id="mgs6" mnemonicParsing="false" text="Fair" />
                                             </items>
                                              <GridPane.margin>
                                                 <Insets left="10.0" right="10.0" />
                                              </GridPane.margin>
                                           </MenuButton>
-                                          <MenuButton maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="Sleeve Grade" textAlignment="CENTER" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
+                                          <MenuButton fx:id="sleeveGradeSelector" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="Sleeve Grade" textAlignment="CENTER" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
                                              <items>
-                                                <MenuItem mnemonicParsing="false" text="Mint" />
-                                                <MenuItem mnemonicParsing="false" text="Near Mint" />
-                                                <MenuItem mnemonicParsing="false" text="Very Good+" />
-                                                <MenuItem mnemonicParsing="false" text="Very Good" />
-                                                <MenuItem mnemonicParsing="false" text="Good" />
-                                                <MenuItem mnemonicParsing="false" text="Fair" />
+                                                <MenuItem fx:id="mss1" mnemonicParsing="false" text="Mint" />
+                                                <MenuItem fx:id="mss2" mnemonicParsing="false" text="Near Mint" />
+                                                <MenuItem fx:id="mss3" mnemonicParsing="false" text="Very Good+" />
+                                                <MenuItem fx:id="mss4" mnemonicParsing="false" text="Very Good" />
+                                                <MenuItem fx:id="mss5" mnemonicParsing="false" text="Good" />
+                                                <MenuItem fx:id="mss6" mnemonicParsing="false" text="Fair" />
                                              </items>
                                              <GridPane.margin>
                                                 <Insets left="10.0" right="10.0" />
@@ -242,12 +194,12 @@
                                           <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                        </rowConstraints>
                                        <children>
-                                          <RadioButton mnemonicParsing="false" text="Vinyl" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
-                                          <RadioButton mnemonicParsing="false" text="Cassette" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
-                                          <RadioButton mnemonicParsing="false" text="CD" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
+                                          <RadioButton fx:id="typeSelectorVinyl" mnemonicParsing="false" onAction="#selectTypeVinyl" text="Vinyl" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
+                                          <RadioButton fx:id="typeSelectorCass" mnemonicParsing="false" onAction="#selectTypeCass" text="Cassette" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
+                                          <RadioButton fx:id="typeSelectorCD" mnemonicParsing="false" onAction="#selectTypeCD" text="CD" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
                                        </children>
                                     </GridPane>
-                                    <GridPane layoutX="10.0" layoutY="10.0" GridPane.rowIndex="5">
+                                    <GridPane layoutX="10.0" layoutY="10.0" GridPane.rowIndex="7">
                                        <columnConstraints>
                                           <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                                           <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -256,12 +208,54 @@
                                           <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                        </rowConstraints>
                                        <children>
+                                          <TextField fx:id="priceField" promptText="Price" GridPane.columnIndex="1">
+                                             <GridPane.margin>
+                                                <Insets left="10.0" right="10.0" />
+                                             </GridPane.margin>
+                                          </TextField>
                                           <TextField fx:id="qtyField" promptText="Qty.">
                                              <GridPane.margin>
                                                 <Insets left="10.0" right="10.0" />
                                              </GridPane.margin>
                                           </TextField>
-                                          <TextField fx:id="priceField" promptText="Price" GridPane.columnIndex="1">
+                                       </children>
+                                    </GridPane>
+                                    <GridPane layoutX="10.0" layoutY="54.0" GridPane.rowIndex="5">
+                                       <columnConstraints>
+                                          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                       </columnConstraints>
+                                       <rowConstraints>
+                                          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                       </rowConstraints>
+                                       <children>
+                                          <TextField fx:id="genreField" promptText="Genre">
+                                             <GridPane.margin>
+                                                <Insets left="10.0" right="10.0" />
+                                             </GridPane.margin>
+                                          </TextField>
+                                          <TextField fx:id="weightField" promptText="Weight" GridPane.columnIndex="1">
+                                             <GridPane.margin>
+                                                <Insets left="10.0" right="10.0" />
+                                             </GridPane.margin>
+                                          </TextField>
+                                       </children>
+                                    </GridPane>
+                                    <GridPane layoutX="10.0" layoutY="202.0" GridPane.rowIndex="6">
+                                       <columnConstraints>
+                                          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                       </columnConstraints>
+                                       <rowConstraints>
+                                          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                       </rowConstraints>
+                                       <children>
+                                          <TextField fx:id="discountField" promptText="Discount %">
+                                             <GridPane.margin>
+                                                <Insets left="10.0" right="10.0" />
+                                             </GridPane.margin>
+                                          </TextField>
+                                          <TextField fx:id="eanField" promptText="EAN Code" GridPane.columnIndex="1">
                                              <GridPane.margin>
                                                 <Insets left="10.0" right="10.0" />
                                              </GridPane.margin>
@@ -277,34 +271,6 @@
                </children></AnchorPane>
       </content>
     </Tab>
-    <Tab text="Users (Not Implemented)">
-        <content>
-            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="371.0" prefWidth="786.0">
-                <children>
-                    <ListView fx:id="productList" layoutX="14.0" layoutY="11.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" onMouseClicked="#loadProductData" prefHeight="346.0" prefWidth="227.0" />
-                    <Button fx:id="updateButton" layoutX="397.0" layoutY="331.0" mnemonicParsing="false" onAction="#updateRecord" text="Update" />
-                    <TextField fx:id="artistField" layoutX="257.0" layoutY="16.0" promptText="Artist" />
-                    <TextField fx:id="yearField" layoutX="437.0" layoutY="16.0" promptText="Release Year" />
-                    <TextField fx:id="albumField" layoutX="257.0" layoutY="56.0" promptText="Album" />
-                    <TextField fx:id="labelField" layoutX="437.0" layoutY="56.0" promptText="Label" />
-                    <TextField fx:id="tracksField" layoutX="257.0" layoutY="95.0" promptText="Track No" />
-                    <TextField fx:id="lengthField" layoutX="437.0" layoutY="95.0" promptText="Length" />
-                    <TextField fx:id="gradeMField" layoutX="257.0" layoutY="156.0" promptText="Media" />
-                    <TextField fx:id="gradeSField" layoutX="437.0" layoutY="156.0" promptText="Sleeve" />
-                    <Text layoutX="409.0" layoutY="140.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Grade" />
-                    <MenuButton fx:id="typeSelector" layoutX="396.0" layoutY="202.0" mnemonicParsing="false" text="Type">
-                        <items>
-                            <MenuItem fx:id="typeCD" mnemonicParsing="false" onAction="#selectTypeCD" text="CD" />
-                            <MenuItem fx:id="typeVinyl" mnemonicParsing="false" onAction="#selectTypeVinyl" text="Vinyl" />
-                            <MenuItem fx:id="typeCass" mnemonicParsing="false" onAction="#selectTypeCass" text="Cassete" />
-                        </items>
-                    </MenuButton>
-                    <TextField fx:id="qtyField" layoutX="260.0" layoutY="261.0" promptText="Qty." />
-                    <TextField fx:id="priceField" layoutX="440.0" layoutY="261.0" promptText="Price" />
-                    <Button fx:id="addButton" layoutX="325.0" layoutY="331.0" mnemonicParsing="false" onAction="#addButtonOnClick" text="Add" textAlignment="CENTER" />
-                    <Button fx:id="deleteButton" alignment="CENTER" layoutX="480.0" layoutY="329.0" minWidth="49.0" mnemonicParsing="false" onAction="#deleteRecord" prefHeight="24.0" text="Remove" textAlignment="CENTER" />
-                </children></AnchorPane>
-        </content>
-    </Tab>
+    <Tab text="Users (Not Implemented)" />
   </tabs>
 </TabPane>

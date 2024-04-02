@@ -2,6 +2,7 @@ package com.vsh8k.mushop.fxControllers;
 
 import com.vsh8k.mushop.mainApplication;
 import com.vsh8k.mushop.model.AccountSystem.Login;
+import com.vsh8k.mushop.model.AccountSystem.User;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -40,10 +41,14 @@ public class LoginWindow {
     @FXML
     private void loginOnClick() {
         System.out.println("LOGIN");
-        String token = Login.getToken(unameField.getText(), passField.getText());
-        if (!token.equals("401")) {
-            System.out.println(token);
-            if (true) { //Later on bus DB.getUserToken ar smth like that
+//        try {
+//            User user = Login.getUser(unameField.getText(), passField.getText());
+//        } catch (Exception e) {
+//            throw new RuntimeException(e);
+//        }
+        if (true) {
+            System.out.println(true);
+            if (true) { //Later on bus DB.getUserHash ar smth like that
                 FXMLLoader loader = new FXMLLoader(mainApplication.class.getResource("main-window.fxml"));
                 try {
                     Parent root = loader.load();
@@ -57,7 +62,6 @@ public class LoginWindow {
                     throw new RuntimeException(e);
                 }
             }
-            //gavom token'a, validatinam ji, passinam duomenis main controlleriui, incializuojam langa
         }
     }
 

@@ -8,7 +8,6 @@ import java.time.LocalDate;
 @Getter
 @Setter
 public abstract class User implements Serializable {
-    //Man reikes veliau, kai dirbsiu su db
     protected int id;
     protected String name;
     protected String surname;

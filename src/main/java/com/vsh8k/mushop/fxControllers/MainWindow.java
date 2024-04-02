@@ -1,85 +1,160 @@
 package com.vsh8k.mushop.fxControllers;
 
 
-import com.vsh8k.mushop.model.Shop.CD;
-import com.vsh8k.mushop.model.Shop.Cass;
-import com.vsh8k.mushop.model.Shop.Product;
-import com.vsh8k.mushop.model.Shop.Vinyl;
+import com.vsh8k.mushop.model.Shop.*;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 
+import java.sql.Time;
+import java.time.Year;
+
 public class MainWindow {
+
     @FXML
-    protected ListView<Product> productList;
+    private ListView<Product> productList;
     @FXML
-    protected TextField artistField;
+    private TextField yearField;
     @FXML
-    protected TextField qtyField;
+    private TextField artistField;
     @FXML
-    protected TextField gradeMField;
+    private TextField albumField;
     @FXML
-    protected TextField gradeSField;
+    private TextField labelField;
     @FXML
-    protected TextField yearField;
+    private TextField tracksField;
     @FXML
-    protected TextField albumField;
+    private TextField lengthField;
+
+    //<editor-fold desc="Media grade selector">
     @FXML
-    protected TextField labelField;
+    private MenuButton mediaGradeSelector;
     @FXML
-    protected TextField tracksField;
+    private MenuItem mgs1;
     @FXML
-    protected TextField lengthField;
+    private MenuItem mgs2;
     @FXML
-    protected TextField priceField;
+    private MenuItem mgs3;
     @FXML
-    protected MenuButton typeSelector;
+    private MenuItem mgs4;
     @FXML
-    protected MenuItem typeCD;
+    private MenuItem mgs5;
     @FXML
-    protected MenuItem typeVinyl;
+    private MenuItem mgs6;
+    //</editor-fold>
+    //<editor-fold desc="Sleeve grade selector">
     @FXML
-    protected MenuItem typeCass;
+    private MenuButton sleeveGradeSelector;
     @FXML
-    protected Button addButton;
-    protected String type;
+    private MenuItem mss1;
     @FXML
-    protected void selectTypeCD() {
+    private MenuItem mss2;
+    @FXML
+    private MenuItem mss3;
+    @FXML
+    private MenuItem mss4;
+    @FXML
+    private MenuItem mss5;
+    @FXML
+    private MenuItem mss6;
+    //</editor-fold>
+    //<editor-fold desc="Media Type Select">
+    @FXML
+    private RadioButton typeSelectorCD;
+    @FXML
+    private RadioButton typeSelectorVinyl;
+    @FXML
+    private RadioButton typeSelectorCass;
+    private ToggleGroup tg = new ToggleGroup();
+    //</editor-fold>
+
+    @FXML
+    private TextField genreField;
+    @FXML
+    private TextField weightField;
+    @FXML
+    private TextField discountField;
+    @FXML
+    private TextField eanField;
+    @FXML
+    private TextField qtyField;
+    @FXML
+    private TextField priceField;
+
+    //<editor-fold desc="CRUD Buttons">
+    @FXML
+    private Button addButton;
+    @FXML
+    private Button updateButton;
+    @FXML
+    private Button removeButton;
+    //</editor-fold>
+
+    private String type;
+
+
+
+    //<editor-fold desc="Media type selection logic">
+    @FXML
+    private void selectTypeCD() {
         type = "CD";
-        typeSelector.setText("CD");
         System.out.println(type);
     }
     @FXML
-    protected void selectTypeVinyl() {
+    private void selectTypeVinyl() {
         type = "Vinyl";
-        typeSelector.setText("Vinyl");
         System.out.println(type);
     }
     @FXML
-    protected void selectTypeCass() {
+    private void selectTypeCass() {
         type = "Cass";
-        typeSelector.setText("Cassette");
         System.out.println(type);
     }
+    //</editor-fold>
+
+    //<editor-fold desc="EventHandlers for MenuButtons">
     @FXML
-    protected void addButtonOnClick()
-    {
-        switch (type) {
-            case "CD":
-                CD cd = new CD("","", Integer.parseInt(qtyField.getText()), (float) 0, Float.parseFloat(priceField.getText()), artistField.getText(), albumField.getText(), yearField.getText(), labelField.getText(), lengthField.getText(), Short.parseShort(tracksField.getText()), gradeMField.getText(), gradeSField.getText(), (short) 1, "nėra atm");
-                productList.getItems().add(cd);
-                break;
-
-            case "Vinyl":
-                Vinyl vinyl = new Vinyl("","", Integer.parseInt(qtyField.getText()), (float) 0, Float.parseFloat(priceField.getText()), artistField.getText(), albumField.getText(), yearField.getText(), labelField.getText(), lengthField.getText(), Short.parseShort(tracksField.getText()), gradeMField.getText(), gradeSField.getText(), (short) 1, "nėra atm");
-                productList.getItems().add(vinyl);
-                break;
-
-            case "Cass":
-                Cass cass = new Cass("","", Integer.parseInt(qtyField.getText()), (float) 0, Float.parseFloat(priceField.getText()), artistField.getText(), albumField.getText(), yearField.getText(), labelField.getText(), lengthField.getText(), Short.parseShort(tracksField.getText()), gradeMField.getText(), gradeSField.getText(), (short) 1, "nėra atm");
-                productList.getItems().add(cass);
-                break;
-
+    EventHandler<ActionEvent> changeMediaGrade = new EventHandler<ActionEvent>() {
+        public void handle(ActionEvent e)
+        {
+            mediaGradeSelector.setText(((MenuItem)e.getSource()).getText());
         }
+    };
+    @FXML
+    EventHandler<ActionEvent> changeSleeveGrade = new EventHandler<ActionEvent>() {
+        public void handle(ActionEvent e)
+        {
+            sleeveGradeSelector.setText(((MenuItem)e.getSource()).getText());
+        }
+    };
+    //</editor-fold>
+
+    @FXML
+    private void addButtonOnClick()
+    {
+        String title = "tofix";
+        String description = "";
+        System.out.println(qtyField.getText());
+        int qty = Integer.parseInt(qtyField.getText());
+        float weight = Float.parseFloat(weightField.getText());
+        float price = Float.parseFloat(priceField.getText());
+        String ean = eanField.getText();
+        int discount = Integer.parseInt(discountField.getText());
+        String artist = artistField.getText();
+        String album = albumField.getText();
+        Year releaseYear = Year.parse(yearField.getText());
+        String label = labelField.getText();
+        Time totalLen = Time.valueOf(lengthField.getText());
+        short trackQty = Short.parseShort(tracksField.getText());
+        String mediaGrade = mediaGradeSelector.getText();
+        String sleeveGrade = sleeveGradeSelector.getText();
+        String genre = genreField.getText();
+        String mediaType = type;
+
+        Media media = new Media(title, description, qty, weight, price, discount, artist, album, releaseYear, label, totalLen, trackQty, mediaGrade, sleeveGrade, genre, ean, mediaType);
+
+        productList.getItems().add(media);
     }
     @FXML
     public void deleteRecord() {
@@ -88,94 +163,58 @@ public class MainWindow {
     }
     @FXML
     void updateRecord() {
-        Product product = productList.getSelectionModel().getSelectedItem();
-
-        if (product instanceof CD) {
-            CD cd = (CD) product;
-            cd.setArtist(artistField.getText());
-            cd.setReleaseYear(yearField.getText());
-            cd.setAlbum(albumField.getText());
-            cd.setLabel(labelField.getText());
-            cd.setTrackQty(Short.parseShort(tracksField.getText()));
-            cd.setTotalLen(lengthField.getText());
-            cd.setMediaGrade(gradeMField.getText());
-            cd.setSleeveGrade(gradeSField.getText());
-            cd.setQty(Integer.parseInt(qtyField.getText()));
-            cd.setPrice(Float.parseFloat(priceField.getText()));
-        }
-        else if (product instanceof Vinyl) {
-            Vinyl vinyl = (Vinyl) product;
-            vinyl.setArtist(artistField.getText());
-            vinyl.setReleaseYear(yearField.getText());
-            vinyl.setAlbum(albumField.getText());
-            vinyl.setLabel(labelField.getText());
-            vinyl.setTrackQty(Short.parseShort(tracksField.getText()));
-            vinyl.setTotalLen(lengthField.getText());
-            vinyl.setMediaGrade(gradeMField.getText());
-            vinyl.setSleeveGrade(gradeSField.getText());
-            vinyl.setQty(Integer.parseInt(qtyField.getText()));
-            vinyl.setPrice(Float.parseFloat(priceField.getText()));
-        }
-        else if (product instanceof Cass) {
-            Cass cass = (Cass) product;
-            cass.setArtist(artistField.getText());
-            cass.setReleaseYear(yearField.getText());
-            cass.setAlbum(albumField.getText());
-            cass.setLabel(labelField.getText());
-            cass.setTrackQty(Short.parseShort(tracksField.getText()));
-            cass.setTotalLen(lengthField.getText());
-            cass.setMediaGrade(gradeMField.getText());
-            cass.setSleeveGrade(gradeSField.getText());
-            cass.setQty(Integer.parseInt(qtyField.getText()));
-            cass.setPrice(Float.parseFloat(priceField.getText()));
-        }
+//        Product product = productList.getSelectionModel().getSelectedItem();
+//        Media album = (Media) product;
+//            album.setArtist(toString(artistField.getText());
+//            album.setReleaseYear(yearField.getText());
+//            album.setAlbum(albumField.getText());
+//            album.setLabel(labelField.getText());
+//            album.setTrackQty(Short.parseShort(tracksField.getText()));
+//            album.setTotalLen(lengthField.getText());
+//            album.setMediaGrade(gradeMField.getText());
+//            album.setSleeveGrade(gradeSField.getText());
+//            album.setQty(Integer.parseInt(qtyField.getText()));
+//            album.setPrice(Float.parseFloat(priceField.getText()));
     }
     @FXML
     public void loadProductData() {
-        Product product = productList.getSelectionModel().getSelectedItem();
+//        Product product = productList.getSelectionModel().getSelectedItem();
+//
+//            Media album = (Media) product;
+//            artistField.setText(album.getArtist());
+//            yearField.setText(album.getReleaseYear());
+//            albumField.setText(album.getAlbum());
+//            labelField.setText(album.getLabel());
+//            tracksField.setText(Short.toString(album.getTrackQty()));
+//            lengthField.setText(album.getTotalLen());
+//            gradeMField.setText(album.getMediaGrade());
+//            gradeSField.setText(album.getSleeveGrade());
+//            typeSelectorCD.fire();
+//            qtyField.setText(Integer.toString(album.getQty()));
+//            priceField.setText(Float.toString(album.getPrice()));
+    }
+    @FXML
+    private void initialize() {
+        typeSelectorVinyl.setToggleGroup(tg);
+        typeSelectorCass.setToggleGroup(tg);
+        typeSelectorCD.setToggleGroup(tg);
 
-        if (product instanceof CD) {
-            CD cd = (CD) product;
-            artistField.setText(cd.getArtist());
-            yearField.setText(cd.getReleaseYear());
-            albumField.setText(cd.getAlbum());
-            labelField.setText(cd.getLabel());
-            tracksField.setText(Short.toString(cd.getTrackQty()));
-            lengthField.setText(cd.getTotalLen());
-            gradeMField.setText(cd.getMediaGrade());
-            gradeSField.setText(cd.getSleeveGrade());
-            typeSelector.setText("CD");
-            qtyField.setText(Integer.toString(cd.getQty()));
-            priceField.setText(Float.toString(cd.getPrice()));
-        }
-        else if (product instanceof Vinyl) {
-            Vinyl vinyl = (Vinyl) product;
-            artistField.setText(vinyl.getArtist());
-            yearField.setText(vinyl.getReleaseYear());
-            albumField.setText(vinyl.getAlbum());
-            labelField.setText(vinyl.getLabel());
-            tracksField.setText(Short.toString(vinyl.getTrackQty()));
-            lengthField.setText(vinyl.getTotalLen());
-            gradeMField.setText(vinyl.getMediaGrade());
-            gradeSField.setText(vinyl.getSleeveGrade());
-            typeSelector.setText("Vinyl");
-            qtyField.setText(Integer.toString(vinyl.getQty()));
-            priceField.setText(Float.toString(vinyl.getPrice()));
-        }
-        else if (product instanceof Cass) {
-            Cass cass = (Cass) product;
-            artistField.setText(cass.getArtist());
-            yearField.setText(cass.getReleaseYear());
-            albumField.setText(cass.getAlbum());
-            labelField.setText(cass.getLabel());
-            tracksField.setText(Short.toString(cass.getTrackQty()));
-            lengthField.setText(cass.getTotalLen());
-            gradeMField.setText(cass.getMediaGrade());
-            gradeSField.setText(cass.getSleeveGrade());
-            typeSelector.setText("Cassette");
-            qtyField.setText(Integer.toString(cass.getQty()));
-            priceField.setText(Float.toString(cass.getPrice()));
-        }
+        mgs1.setOnAction(changeMediaGrade);
+        mgs2.setOnAction(changeMediaGrade);
+        mgs3.setOnAction(changeMediaGrade);
+        mgs4.setOnAction(changeMediaGrade);
+        mgs5.setOnAction(changeMediaGrade);
+        mgs6.setOnAction(changeMediaGrade);
+
+        mss1.setOnAction(changeSleeveGrade);
+        mss2.setOnAction(changeSleeveGrade);
+        mss3.setOnAction(changeSleeveGrade);
+        mss4.setOnAction(changeSleeveGrade);
+        mss5.setOnAction(changeSleeveGrade);
+        mss6.setOnAction(changeSleeveGrade);
+
+        System.out.println("init!");
+
     }
 }
 
