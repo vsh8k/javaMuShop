@@ -1,6 +1,7 @@
 package com.vsh8k.mushop.fxControllers;
 
 
+import com.vsh8k.mushop.model.Misc.Validate;
 import com.vsh8k.mushop.model.Shop.*;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -93,7 +94,46 @@ public class MainWindow {
 
     private String type;
 
+    //<editor-fold desc="Products tab data and reading">
+    private String title;
+    private String description;
+    private int qty;
+    private float weight;
+    private float price;
+    private String ean;
+    private int discount;
+    private String artist;
+    private String album;
+    private Year releaseYear;
+    private String label;
+    private Time totalLen;
+    private short trackQty;
+    private String mediaGrade;
+    private String sleeveGrade;
+    private String genre;
+    private String mediaType;
 
+    private void readValidateDataFromUI() {
+        qty = Validate.validateAndConvertInteger(qtyField.getText(), "Quantity");
+        weight = Validate.validateAndConvertFloat(weightField.getText(), "Weight");
+        price = Validate.validateAndConvertFloat(priceField.getText(), "Price");
+        ean = Validate.validateAndConvertString(eanField.getText(), "EAN");
+        discount = Validate.validateAndConvertInteger(discountField.getText(), "Discount");
+        artist = Validate.validateAndConvertString(artistField.getText(), "Artist");
+        album = Validate.validateAndConvertString(albumField.getText(), "Album");
+        releaseYear = Validate.validateAndConvertYear(yearField.getText(), "Release Year");
+        label = Validate.validateAndConvertString(labelField.getText(), "Label");
+        totalLen = Validate.validateAndConvertTime(lengthField.getText(), "Total Length");
+        trackQty = Validate.validateAndConvertShort(tracksField.getText(), "Track Quantity");
+        mediaGrade = Validate.validateAndConvertString(mediaGradeSelector.getText(), "Media Grade");
+        sleeveGrade = Validate.validateAndConvertString(sleeveGradeSelector.getText(), "Sleeve Grade");
+        genre = Validate.validateAndConvertString(genreField.getText(), "Genre");
+        mediaType = type;
+        title = artist + "-" + album;
+        description = "";
+    }
+
+    //</editor-fold>
 
     //<editor-fold desc="Media type selection logic">
     @FXML
@@ -129,31 +169,11 @@ public class MainWindow {
         }
     };
     //</editor-fold>
-
     @FXML
     private void addButtonOnClick()
     {
-        String title = "tofix";
-        String description = "";
-        System.out.println(qtyField.getText());
-        int qty = Integer.parseInt(qtyField.getText());
-        float weight = Float.parseFloat(weightField.getText());
-        float price = Float.parseFloat(priceField.getText());
-        String ean = eanField.getText();
-        int discount = Integer.parseInt(discountField.getText());
-        String artist = artistField.getText();
-        String album = albumField.getText();
-        Year releaseYear = Year.parse(yearField.getText());
-        String label = labelField.getText();
-        Time totalLen = Time.valueOf(lengthField.getText());
-        short trackQty = Short.parseShort(tracksField.getText());
-        String mediaGrade = mediaGradeSelector.getText();
-        String sleeveGrade = sleeveGradeSelector.getText();
-        String genre = genreField.getText();
-        String mediaType = type;
-
+        readValidateDataFromUI();
         Media media = new Media(title, description, qty, weight, price, discount, artist, album, releaseYear, label, totalLen, trackQty, mediaGrade, sleeveGrade, genre, ean, mediaType);
-
         productList.getItems().add(media);
     }
     @FXML
@@ -163,23 +183,33 @@ public class MainWindow {
     }
     @FXML
     void updateRecord() {
-//        Product product = productList.getSelectionModel().getSelectedItem();
-//        Media album = (Media) product;
-//            album.setArtist(toString(artistField.getText());
-//            album.setReleaseYear(yearField.getText());
-//            album.setAlbum(albumField.getText());
-//            album.setLabel(labelField.getText());
-//            album.setTrackQty(Short.parseShort(tracksField.getText()));
-//            album.setTotalLen(lengthField.getText());
-//            album.setMediaGrade(gradeMField.getText());
-//            album.setSleeveGrade(gradeSField.getText());
-//            album.setQty(Integer.parseInt(qtyField.getText()));
-//            album.setPrice(Float.parseFloat(priceField.getText()));
+        readValidateDataFromUI();
+        Product product = productList.getSelectionModel().getSelectedItem();
+        if (product instanceof Media) {
+            Media media = (Media) product;
+            media.setTitle(title);
+            media.setDescription(description);
+            media.setQty(qty);
+            media.setWeight(weight);
+            media.setPrice(price);
+            media.setDiscount(discount);
+            media.setArtist(artist);
+            media.setAlbum(album);
+            media.setReleaseYear(releaseYear);
+            media.setLabel(label);
+            media.setTotalLen(totalLen);
+            media.setTrackQty(trackQty);
+            media.setMediaGrade(mediaGrade);
+            media.setSleeveGrade(sleeveGrade);
+            media.setGenre(genre);
+            media.setEan(ean);
+            media.setMediaType(mediaType);
+        }
     }
     @FXML
     public void loadProductData() {
-//        Product product = productList.getSelectionModel().getSelectedItem();
-//
+        Product product = productList.getSelectionModel().getSelectedItem();
+
 //            Media album = (Media) product;
 //            artistField.setText(album.getArtist());
 //            yearField.setText(album.getReleaseYear());
