@@ -69,9 +69,8 @@ public class LoginWindow {
             FXMLLoader loader = new FXMLLoader(mainApplication.class.getResource("registration-window.fxml"));
             try {
                 Parent root = loader.load();
-                MainWindow mainWindowController = loader.getController();
+                RegistrationWindow registrationWindowController = loader.getController();
                 Scene scene = new Scene(root);
-                scene.getStylesheets().add(mainApplication.class.getResource("bootstrap3.css").toExternalForm());
                 Stage primaryStage = (Stage) unameField.getScene().getWindow();
                 primaryStage.setScene(scene);
                 primaryStage.show();
