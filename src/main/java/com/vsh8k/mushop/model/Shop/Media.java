@@ -15,7 +15,7 @@ import java.util.ArrayList;
 public class Media extends Product {
     private String artist;
     private String album;
-    private Year releaseYear;
+    private int releaseYear;
     private String label;
     private Time totalLen;
     private short trackQty;
@@ -28,7 +28,7 @@ public class Media extends Product {
         return id + " : " + this.artist + " - " + this.album;
     }
 
-    public Media(int id, String title, String description, int qty, float weight, float price, int discount, String artist, String album, Year releaseYear, String label, Time totalLen, short trackQty, String mediaGrade, String sleeveGrade, String genre, String ean, String mediaType) {
+    public Media(int id, String title, String description, int qty, float weight, float price, int discount, String artist, String album, int releaseYear, String label, Time totalLen, short trackQty, String mediaGrade, String sleeveGrade, String genre, String ean, String mediaType) {
         super(id, title, description, qty, weight, price, discount, ean);
         this.artist = artist;
         this.album = album;
@@ -62,7 +62,7 @@ public class Media extends Product {
                 int discount = resultSet.getInt("discount");
                 String artist = resultSet.getString("artist");
                 String album = resultSet.getString("album");
-                Year releaseYear = Year.of(resultSet.getInt("release_year"));
+                int releaseYear = resultSet.getInt("release_year");
                 String label = resultSet.getString("label");
                 Time totalLen = resultSet.getTime("total_length");
                 short trackQty = resultSet.getShort("track_quantity");

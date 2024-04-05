@@ -34,15 +34,15 @@ public class Validate {
         }
     }
 
-    public static Year validateAndConvertYear(String input, String fieldName) throws ValidationException {
+    public static int validateAndConvertYear(String input, String fieldName) throws ValidationException {
         if (isEmptyString(input)) {
             throw new ValidationException(fieldName + " field is empty");
         }
-        try {
-            return Year.parse(input);
-        } catch (DateTimeException e) {
+        int year = Integer.parseInt(input);
+        if (year < 1900 || year > Year.now().getValue()) {
             throw new ValidationException("Invalid year format in " + fieldName + " field");
         }
+        else return year;
     }
 
     public static Time validateAndConvertTime(String input, String fieldName) throws ValidationException {

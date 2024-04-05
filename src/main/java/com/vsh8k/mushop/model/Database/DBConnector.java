@@ -74,6 +74,7 @@ public class DBConnector {
         try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setObject(1, conditionValue);
             preparedStatement.executeUpdate();
+            System.out.println(preparedStatement.toString());
         }
     }
 

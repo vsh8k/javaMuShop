@@ -13,6 +13,7 @@ import javafx.scene.control.*;
 import lombok.SneakyThrows;
 
 import java.net.URL;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Time;
 import java.time.Year;
@@ -25,6 +26,8 @@ public class MainWindow {
     String dbUsername = "root";
     String dbPassword = "";
     private DBConnector db = new DBConnector(dbUrl, dbUsername, dbPassword);
+    private String mediaCols[] = {"title", "description", "qty", "weight", "price", "discount", "artist", "album", "release_year", "label", "total_length", "track_quantity", "media_grade", "sleeve_grade", "genre", "ean", "media_type"};
+    private Object mediaValues[] = {};
     //</editor-fold>
 
     //<editor-fold desc="Tab: Products">
@@ -120,7 +123,7 @@ public class MainWindow {
     private int discount;
     private String artist;
     private String album;
-    private Year releaseYear;
+    private int releaseYear;
     private String label;
     private Time totalLen;
     private short trackQty;
@@ -147,6 +150,7 @@ public class MainWindow {
         mediaType = Validate.validateAndConvertString(type, "Media Type");
         title = artist + "-" + album;
         description = "";
+        mediaValues = new Object[]{title, description, qty, weight, price, discount, artist, album, releaseYear, label, totalLen, trackQty, mediaGrade, sleeveGrade, genre, ean, mediaType};
     }
 
     //</editor-fold>
@@ -189,25 +193,46 @@ public class MainWindow {
     private void addButtonOnClick()
     {
         try {
+
             readValidateDataFromUI();
-            int last_id = 1;
-            Media media = new Media(last_id + 1, title, description, qty, weight, price, discount, artist, album, releaseYear, label, totalLen, trackQty, mediaGrade, sleeveGrade, genre, ean, mediaType);
+            Media media = new Media(0, title, description, qty, weight, price, discount, artist, album, releaseYear, label, totalLen, trackQty, mediaGrade, sleeveGrade, genre, ean, mediaType);
             productList.getItems().add(media);
+            db.connect();
+            db.insert("media", mediaCols, mediaValues);
+            updateProductList();
+            db.disconnect();
         } catch (Exception e) {
             Warning.display("Validation error!", e.getMessage());
         }
     }
     @FXML
     public void deleteRecord() {
-        Object selectedItem = productList.getSelectionModel().getSelectedItem();
-        productList.getItems().remove(selectedItem);
+        //FEP: Add Confirmation Dialog
+        try {
+            db.connect();
+            Object selectedItem = productList.getSelectionModel().getSelectedItem();
+            if(selectedItem instanceof Product selectedProduct)
+            {
+                db.delete("media", "id", selectedProduct.getId());
+                db.disconnect();
+            }
+            productList.getItems().remove(selectedItem);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
     }
     @FXML
     void updateRecord() {
         try {
             readValidateDataFromUI();
+            db.connect();
             Object selectedItem = productList.getSelectionModel().getSelectedItem();
         if (selectedItem instanceof Media media) {
+                for(int i = 0; i < mediaCols.length; i++){
+                    db.update("media", mediaCols[i], mediaValues[i], "id", media.getId());
+                }
+                db.disconnect();
             media.setTitle(title);
             media.setDescription(description);
             media.setQty(qty);
