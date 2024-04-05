@@ -1,6 +1,8 @@
 package com.vsh8k.mushop.model.Misc;
 
+import java.sql.Date;
 import java.time.DateTimeException;
+import java.time.LocalDate;
 import java.time.Year;
 import java.sql.Time;
 import java.util.regex.Matcher;
@@ -75,6 +77,49 @@ public class Validate {
 
     public static boolean isEmptyString(String input) {
         return input == null || input.trim().isEmpty();
+    }
+
+    public static Date validateAndConvertDate(LocalDate date, String fieldName) throws ValidationException {
+        System.out.println(date);
+        if (date == null) {
+            throw new ValidationException(fieldName + " field is empty");
+        }
+        if(date.isAfter(LocalDate.now().minusYears(14))) {
+            throw new ValidationException("You're not old enough to create an account");
+        }
+        else return Date.valueOf(date);
+    }
+
+    public static String validatePhoneNumber(String number, String fieldName) throws ValidationException {
+        if (isEmptyString(number)) {
+            throw new ValidationException(fieldName + " field is empty");
+        }
+        String regex = "\\+\\d{7,15}";
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(number);
+        if (!matcher.find()) {
+            throw new ValidationException("Invalid phone number");
+        }
+        else return number;
+    }
+
+    public static String validatePassword(String password, String fieldName) throws ValidationException {
+        if (isEmptyString(password)) {
+            throw new ValidationException(fieldName + " field is empty");
+        }
+        if (password.length() < 7) {
+            throw new ValidationException("Password must be at least 7 characters");
+        }
+        if (password.length() > 15) {
+            throw new ValidationException("I doubt you will remeber that passworrd ;)");
+        }
+        String regex = "(?=.*[A-Z])(?=.*\\d).+";
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(password);
+        if (!matcher.find()) {
+            throw new ValidationException("Password must contain at least one capital letter and a number");
+        }
+        else return password;
     }
 
     public static String validateEmail(String email, String fieldName) throws ValidationException {

@@ -73,11 +73,11 @@ public class RegistrationWindow {
         try {
             String fName = Validate.validateAndConvertString(fNameField.getText(), "First Name");
             String lName = Validate.validateAndConvertString(lNameField.getText(), "Last Name");
-            //String number = Validate.validatePhone(numberField.getText(), "Phone Number");
-            //Date bDate = Validate.validateAndConvertDate(bDateField.getValue());
+            String number = Validate.validatePhoneNumber(numberField.getText(), "Phone Number");
+            Date bDate = Validate.validateAndConvertDate(bDateField.getValue(), "Birth Date");
             String email = Validate.validateEmail(emailField.getText(), "Email");
             String email1 = Validate.validateEquals(emailField.getText(), emailField1.getText(), "Repeat Email");
-            //String pass = Validate.validatePassword(passField.getText(), "Password");
+            String pass = Validate.validatePassword(passField.getText(), "Password");
             String pass1 = Validate.validateEquals(passField.getText(), passField1.getText(), "Repeat Password");
             String cc = Validate.validateCreditCardNumber(ccField.getText(), "Credt Card Number");
             String yymm = Validate.validateAndConvertYYMM(yyField.getText(),  mmField.getText(), "Expiry Date");
