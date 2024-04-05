@@ -1,18 +1,34 @@
 package com.vsh8k.mushop.fxControllers;
 
 
+import com.vsh8k.mushop.model.Database.DBConnector;
 import com.vsh8k.mushop.model.Misc.Validate;
+import com.vsh8k.mushop.model.Popup.Warning;
 import com.vsh8k.mushop.model.Shop.*;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 import javafx.scene.control.*;
+import lombok.SneakyThrows;
 
+import java.net.URL;
+import java.sql.SQLException;
 import java.sql.Time;
 import java.time.Year;
+import java.util.ArrayList;
+import java.util.ResourceBundle;
 
 public class MainWindow {
+    //<editor-fold desc="DB Details">
+    String dbUrl = "jdbc:mysql://localhost:3306/products";
+    String dbUsername = "root";
+    String dbPassword = "";
+    private DBConnector db = new DBConnector(dbUrl, dbUsername, dbPassword);
+    //</editor-fold>
 
+    //<editor-fold desc="Tab: Products">
+    private ArrayList<Product> products = new ArrayList<>();
     @FXML
     private ListView<Product> productList;
     @FXML
@@ -113,7 +129,7 @@ public class MainWindow {
     private String genre;
     private String mediaType;
 
-    private void readValidateDataFromUI() {
+    private void readValidateDataFromUI() throws Exception{
         qty = Validate.validateAndConvertInteger(qtyField.getText(), "Quantity");
         weight = Validate.validateAndConvertFloat(weightField.getText(), "Weight");
         price = Validate.validateAndConvertFloat(priceField.getText(), "Price");
@@ -128,7 +144,7 @@ public class MainWindow {
         mediaGrade = Validate.validateAndConvertString(mediaGradeSelector.getText(), "Media Grade");
         sleeveGrade = Validate.validateAndConvertString(sleeveGradeSelector.getText(), "Sleeve Grade");
         genre = Validate.validateAndConvertString(genreField.getText(), "Genre");
-        mediaType = type;
+        mediaType = Validate.validateAndConvertString(type, "Media Type");
         title = artist + "-" + album;
         description = "";
     }
@@ -172,21 +188,26 @@ public class MainWindow {
     @FXML
     private void addButtonOnClick()
     {
-        readValidateDataFromUI();
-        Media media = new Media(title, description, qty, weight, price, discount, artist, album, releaseYear, label, totalLen, trackQty, mediaGrade, sleeveGrade, genre, ean, mediaType);
-        productList.getItems().add(media);
+        try {
+            readValidateDataFromUI();
+            int last_id = 1;
+            Media media = new Media(last_id + 1, title, description, qty, weight, price, discount, artist, album, releaseYear, label, totalLen, trackQty, mediaGrade, sleeveGrade, genre, ean, mediaType);
+            productList.getItems().add(media);
+        } catch (Exception e) {
+            Warning.display("Validation error!", e.getMessage());
+        }
     }
     @FXML
     public void deleteRecord() {
-        Product product = productList.getSelectionModel().getSelectedItem();
-        productList.getItems().remove(product);
+        Object selectedItem = productList.getSelectionModel().getSelectedItem();
+        productList.getItems().remove(selectedItem);
     }
     @FXML
     void updateRecord() {
-        readValidateDataFromUI();
-        Product product = productList.getSelectionModel().getSelectedItem();
-        if (product instanceof Media) {
-            Media media = (Media) product;
+        try {
+            readValidateDataFromUI();
+            Object selectedItem = productList.getSelectionModel().getSelectedItem();
+        if (selectedItem instanceof Media media) {
             media.setTitle(title);
             media.setDescription(description);
             media.setQty(qty);
@@ -204,25 +225,72 @@ public class MainWindow {
             media.setGenre(genre);
             media.setEan(ean);
             media.setMediaType(mediaType);
+            productList.refresh();
+        }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
     }
-    @FXML
-    public void loadProductData() {
-        Product product = productList.getSelectionModel().getSelectedItem();
+@FXML
+public void loadProductData() {
 
-//            Media album = (Media) product;
-//            artistField.setText(album.getArtist());
-//            yearField.setText(album.getReleaseYear());
-//            albumField.setText(album.getAlbum());
-//            labelField.setText(album.getLabel());
-//            tracksField.setText(Short.toString(album.getTrackQty()));
-//            lengthField.setText(album.getTotalLen());
-//            gradeMField.setText(album.getMediaGrade());
-//            gradeSField.setText(album.getSleeveGrade());
-//            typeSelectorCD.fire();
-//            qtyField.setText(Integer.toString(album.getQty()));
-//            priceField.setText(Float.toString(album.getPrice()));
+    Product product = productList.getSelectionModel().getSelectedItem();
+    if (product instanceof Media) {
+        Media media = (Media) product;
+        yearField.setText(String.valueOf(media.getReleaseYear()));
+        artistField.setText(media.getArtist());
+        albumField.setText(media.getAlbum());
+        labelField.setText(media.getLabel());
+        tracksField.setText(Integer.toString(media.getTrackQty()));
+        lengthField.setText(String.valueOf(media.getTotalLen()));
+        mediaGradeSelector.setText(media.getMediaGrade());
+        sleeveGradeSelector.setText(media.getSleeveGrade());
+        switch (media.getMediaType()) {
+            case "CD":
+                selectTypeCD();
+                typeSelectorCD.fire();
+                break;
+            case "Cass":
+                selectTypeCass();
+                typeSelectorCass.fire();
+                break;
+            case "Vinyl":
+                selectTypeVinyl();
+                typeSelectorVinyl.fire();
+                break;
+        }
+        genreField.setText(media.getGenre());
+        weightField.setText(Float.toString(media.getWeight()));
+        discountField.setText(Integer.toString(media.getDiscount()));
+        eanField.setText(media.getEan());
+        qtyField.setText(Integer.toString(media.getQty()));
+        priceField.setText(Float.toString(media.getPrice()));
+
+        try {
+            // Read and validate data after setting all fields
+            readValidateDataFromUI();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
+}
+@SneakyThrows
+@FXML
+private void updateProductList() {
+        productList.getItems().clear();
+        products = Media.getAllProductsFromDB(db);
+        for (Product product : products) {
+            productList.getItems().add(product);
+        }
+        System.out.println("Product list updated");
+}
+    //</editor-fold>
+    //<editor-fold desc="Tab: Users">
+    //</editor-fold>
+    //<editor-fold desc="Tab: Shop">
+    //</editor-fold>
+    //<editor-fold desc="Tab: Cart">
+    //</editor-fold>
     @FXML
     private void initialize() {
         typeSelectorVinyl.setToggleGroup(tg);
@@ -242,9 +310,9 @@ public class MainWindow {
         mss4.setOnAction(changeSleeveGrade);
         mss5.setOnAction(changeSleeveGrade);
         mss6.setOnAction(changeSleeveGrade);
-
+        //
         System.out.println("init!");
-
     }
+
 }
 

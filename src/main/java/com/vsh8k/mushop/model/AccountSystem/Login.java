@@ -11,63 +11,49 @@ import java.util.ArrayList;
 import java.util.Base64;
 
 import com.vsh8k.mushop.model.Database.DBConnector;
+import com.vsh8k.mushop.model.Shop.Media;
 import org.apache.commons.codec.binary.Hex;
+
 import java.util.HexFormat;
 
 public class Login {
 
-    public static User getUser(String username, String password) throws Exception{
-        String client_hash = Hash.getHash(username, password);
-        String dbUrl = "jdbc:mysql://localhost:3306/mushop";
+    public static User getUser(String username, String password) throws Exception {
+        String dbUrl = "jdbc:mysql://localhost:3306/products";
         String dbUsername = "root";
         String dbPassword = "";
         DBConnector loginConnector = new DBConnector(dbUrl, dbUsername, dbPassword);
-
-        try {
-            loginConnector.connect();
-            ResultSet resultSet = loginConnector.query("SELECT * FROM users WHERE username = '" + username + "'");
-            if (resultSet.next()) {
-                String server_hash = resultSet.getString("password");
-                if(client_hash.equals(server_hash))
-                {
-                    System.out.println("Tu dievas, prisijungei!!!");
-                }
-                else {
-                    throw new Exception("Exception message");//Blogas pwd
-                }
-            } else {
-                throw new Exception("Exception message");//Blogas pwd
-            }
+        loginConnector.connect();
+        String storedHash = Hash.getStoredHash(username, loginConnector);
+        if(!Hash.verifyPassword(password, storedHash)) {
+            throw new Exception("Wrong credentials");
+        }
+        System.out.println(storedHash);
+        ResultSet resultSet = loginConnector.query("SELECT * FROM users WHERE login = '" + username + "'");
+        if(resultSet.next()) {
             int userType = resultSet.getInt("account_level");
+            User usr = null;
+            String uName = resultSet.getString("login");
+            String name = resultSet.getString("name");
+            String sName = resultSet.getString("surname");
             switch (userType) {
                 case 0:
-                    System.out.println("Admin");
+                    usr = new Manager(name, sName, uName, storedHash, false);
                     break;
                 case 1:
-                    System.out.println("Manager");
+                    usr = new Manager(name, sName, uName, storedHash, true);
                     break;
                 case 2:
-                    String uName = resultSet.getString("username");
-                    String name = resultSet.getString("first_name");
-                    String sName = resultSet.getString("last_name");
-                    LocalDate createDate = resultSet.getDate("create_date").toLocalDate();
-                    String cardDetails = resultSet.getString("cc_details");
-                    String deliveryAddr = resultSet.getString("delivery_address");
-                    String billingAddr = resultSet.getString("billing_address");
-                    LocalDate birthDate = resultSet.getDate("birth_date").toLocalDate();
-                    User usr = new Customer(name, sName, uName, client_hash,cardDetails,deliveryAddr,billingAddr,birthDate);
+                    LocalDate createDate = resultSet.getDate("dateCreated").toLocalDate();
+                    String cardDetails = ""; //resultSet.getString("cc_details");
+                    String deliveryAddr = resultSet.getString("deliveryAddress");
+                    String billingAddr = resultSet.getString("billingAddress");
+                    LocalDate birthDate = resultSet.getDate("birthDate").toLocalDate();
+                    usr = new Customer(name, sName, uName, storedHash, cardDetails, deliveryAddr, billingAddr, birthDate);
                     break;
             }
-            User usr = new Manager("1", "1", "1", "1", true);
             return usr;
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
         }
-    }
-    public static String getToken(String uname, String pass) {
-        return "THISISATOKEN";
-    }
-    public static void getUser(String token) {
-    //Pakeisti void į user, kai baigsiu su SQL'u
+        return null;
     }
 }

@@ -3,6 +3,7 @@ package com.vsh8k.mushop.fxControllers;
 import com.vsh8k.mushop.mainApplication;
 import com.vsh8k.mushop.model.AccountSystem.Login;
 import com.vsh8k.mushop.model.AccountSystem.User;
+import com.vsh8k.mushop.model.Popup.Warning;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -41,27 +42,23 @@ public class LoginWindow {
     @FXML
     private void loginOnClick() {
         System.out.println("LOGIN");
-//        try {
-//            User user = Login.getUser(unameField.getText(), passField.getText());
-//        } catch (Exception e) {
-//            throw new RuntimeException(e);
-//        }
-        if (true) {
-            System.out.println(true);
-            if (true) { //Later on bus DB.getUserHash ar smth like that
-                FXMLLoader loader = new FXMLLoader(mainApplication.class.getResource("main-window.fxml"));
-                try {
-                    Parent root = loader.load();
-                    MainWindow mainWindowController = loader.getController();
-                    Scene scene = new Scene(root);
-                    scene.getStylesheets().add(mainApplication.class.getResource("bootstrap3.css").toExternalForm());
-                    Stage primaryStage = (Stage) unameField.getScene().getWindow();
-                    primaryStage.setScene(scene);
-                    primaryStage.show();
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
+        User user = null;
+        try {
+            user = Login.getUser(unameField.getText(), passField.getText());
+            FXMLLoader loader = new FXMLLoader(mainApplication.class.getResource("main-window.fxml"));
+            try {
+                Parent root = loader.load();
+                MainWindow mainWindowController = loader.getController();
+                Scene scene = new Scene(root);
+                scene.getStylesheets().add(mainApplication.class.getResource("bootstrap3.css").toExternalForm());
+                Stage primaryStage = (Stage) unameField.getScene().getWindow();
+                primaryStage.setScene(scene);
+                primaryStage.show();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
             }
+        } catch (Exception e) {
+            Warning.display("Error", e.getMessage());
         }
     }
 
