@@ -5,7 +5,7 @@ import com.vsh8k.mushop.model.AccountSystem.Manager;
 import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Order extends Cart implements Serializable {
+public class Order extends Cart{
     private int id;
     private int status;
     private Manager assignedManager;

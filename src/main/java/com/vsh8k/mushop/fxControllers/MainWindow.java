@@ -109,6 +109,8 @@ public class MainWindow {
     private Button updateButton;
     @FXML
     private Button removeButton;
+    @FXML
+    private Button commentsButton;
     //</editor-fold>
 
     private String type;
@@ -206,7 +208,7 @@ public class MainWindow {
         }
     }
     @FXML
-    public void deleteRecord() {
+    private void deleteRecord() {
         //FEP: Add Confirmation Dialog
         try {
             db.connect();
@@ -256,8 +258,12 @@ public class MainWindow {
             throw new RuntimeException(e);
         }
     }
+    @FXML
+    private void editComments(){
+
+    }
 @FXML
-public void loadProductData() {
+private void loadProductData() {
 
     Product product = productList.getSelectionModel().getSelectedItem();
     if (product instanceof Media) {
@@ -306,6 +312,8 @@ private void updateProductList() {
         products = Media.getAllProductsFromDB(db);
         for (Product product : products) {
             productList.getItems().add(product);
+            product.getCommentsFromDB(db);
+            //KOMENTARAI IS DB
         }
         System.out.println("Product list updated");
 }

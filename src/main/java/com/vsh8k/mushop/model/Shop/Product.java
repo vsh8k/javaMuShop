@@ -4,6 +4,7 @@ import com.vsh8k.mushop.model.Database.DBConnector;
 import lombok.Getter;
 import lombok.Setter;
 
+import javax.xml.transform.Result;
 import java.io.Serializable;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -11,6 +12,8 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+
 @Getter
 @Setter
 
@@ -43,4 +46,12 @@ public abstract class Product implements Serializable {
         this.ean = ean;
     }
 
+    public List<Comment> getCommentsFromDB(DBConnector db) {
+        CommentManager cm = new CommentManager();
+        List<Comment> commList = cm.getCommentsFromDB(db, this.id);
+        for (Comment comment : commList) {
+            System.out.println(comment.getBody());
+        }
+        return commList;
+    }
 }
