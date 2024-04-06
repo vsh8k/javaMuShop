@@ -1,7 +1,6 @@
-package com.vsh8k.mushop.model.Shop;
+package com.vsh8k.mushop.model.Database;
 
 import com.vsh8k.mushop.model.AccountSystem.User;
-import com.vsh8k.mushop.model.Database.DBConnector;
 import com.vsh8k.mushop.model.Shop.Comment;
 
 import java.sql.ResultSet;
@@ -28,7 +27,7 @@ public class CommentManager {
                 while (resultSet.next()) {
                     int id = resultSet.getInt("id");
                     int authorId = resultSet.getInt("author_id"); // Assuming author_id column name
-                    User author = getUserFromDB(authorId); // Implement this method to retrieve User from DB
+                    User author = UserManager.getUserFromDB(authorId, db); // Implement this method to retrieve User from DB
                     String commentText = resultSet.getString("body"); // Assuming column names
                     String commentTitle = resultSet.getString("title"); // Assuming column names
                     int parentCommId = resultSet.getInt("parent_comment_id"); // Assuming column names
@@ -38,17 +37,10 @@ public class CommentManager {
                     comments.add(comment);
                 }
             }
-
             db.disconnect();
             return comments;
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    // Implement this method to retrieve User from DB
-    private User getUserFromDB(int authorId) {
-        // Your implementation here
-        return null;
     }
 }

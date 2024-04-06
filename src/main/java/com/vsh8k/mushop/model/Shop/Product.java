@@ -1,18 +1,14 @@
 package com.vsh8k.mushop.model.Shop;
 
+import com.vsh8k.mushop.model.Database.CommentManager;
 import com.vsh8k.mushop.model.Database.DBConnector;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.xml.transform.Result;
 import java.io.Serializable;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 @Getter
 @Setter

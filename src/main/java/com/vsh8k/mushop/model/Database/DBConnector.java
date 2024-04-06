@@ -1,4 +1,6 @@
 package com.vsh8k.mushop.model.Database;
+import lombok.SneakyThrows;
+
 import java.sql.*;
 import java.util.ArrayList;
 
@@ -82,5 +84,10 @@ public class DBConnector {
     public ResultSet query(String query) throws SQLException {
         Statement statement = connection.createStatement();
         return statement.executeQuery(query);
+    }
+
+    @SneakyThrows
+    public boolean isConnected() {
+        return !connection.isClosed();
     }
 }

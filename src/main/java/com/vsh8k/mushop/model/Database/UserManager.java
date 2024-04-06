@@ -1,30 +1,29 @@
-package com.vsh8k.mushop.model.AccountSystem;
+package com.vsh8k.mushop.model.Database;
+
+import com.vsh8k.mushop.model.AccountSystem.Customer;
+import com.vsh8k.mushop.model.AccountSystem.Manager;
+import com.vsh8k.mushop.model.AccountSystem.User;
+import lombok.SneakyThrows;
 
 import java.sql.ResultSet;
 import java.time.LocalDate;
 
-import com.vsh8k.mushop.model.Database.DBConnector;
-
-public class Login {
-
-    public static User validateAndGetUser(String username, String password) throws Exception {
-        String dbUrl = "jdbc:mysql://localhost:3306/products";
-        String dbUsername = "root";
-        String dbPassword = "";
-        DBConnector loginConnector = new DBConnector(dbUrl, dbUsername, dbPassword);
-        loginConnector.connect();
-        String storedHash = Hash.getStoredHash(username, loginConnector);
-        if(!Hash.verifyPassword(password, storedHash)) {
-            throw new Exception("Wrong credentials");
+public class UserManager {
+    @SneakyThrows
+    public static User getUserFromDB(int authorId, DBConnector db) {
+        // Your implementation here
+        if (!db.isConnected()) {
+            db.connect();
         }
-        System.out.println(storedHash);
-        ResultSet resultSet = loginConnector.query("SELECT * FROM users WHERE login = '" + username + "'");
-        if(resultSet.next()) {
+        else return null;
+        ResultSet resultSet = db.query("SELECT * FROM users WHERE author_id = " + authorId);
+        if (resultSet.next()) {
             int userType = resultSet.getInt("account_level");
             User usr = null;
             String uName = resultSet.getString("login");
             String name = resultSet.getString("name");
             String sName = resultSet.getString("surname");
+            String storedHash = null;
             switch (userType) {
                 case 0:
                     usr = new Manager(name, sName, uName, storedHash, false);

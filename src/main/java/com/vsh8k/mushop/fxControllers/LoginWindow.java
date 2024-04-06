@@ -44,7 +44,7 @@ public class LoginWindow {
         System.out.println("LOGIN");
         User user = null;
         try {
-            user = Login.getUser(unameField.getText(), passField.getText());
+            user = Login.validateAndGetUser(unameField.getText(), passField.getText());
             FXMLLoader loader = new FXMLLoader(mainApplication.class.getResource("main-window.fxml"));
             try {
                 Parent root = loader.load();
