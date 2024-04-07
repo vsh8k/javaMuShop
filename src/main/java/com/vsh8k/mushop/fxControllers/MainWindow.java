@@ -1,6 +1,5 @@
 package com.vsh8k.mushop.fxControllers;
 
-
 import com.vsh8k.mushop.model.AccountSystem.Manager;
 import com.vsh8k.mushop.model.AccountSystem.User;
 import com.vsh8k.mushop.model.Database.DBConnector;
@@ -16,9 +15,11 @@ import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.stage.Stage;
 import lombok.SneakyThrows;
 
 import java.net.URL;
@@ -36,6 +37,12 @@ public class MainWindow {
     private String mediaCols[] = {"title", "description", "qty", "weight", "price", "discount", "artist", "album", "release_year", "label", "total_length", "track_quantity", "media_grade", "sleeve_grade", "genre", "ean", "media_type"};
     private Object mediaValues[] = {};
     //</editor-fold>
+
+    //<editor-fold desc="Current User">
+    User currentUser = null;
+    //</editor-fold>
+
+    Stage primaryStage = null;
 
     //<editor-fold desc="Tab: Products">
     private ArrayList<Product> products = new ArrayList<>();
@@ -347,18 +354,19 @@ private void updateProductList() {
 
     @FXML
 private void updateUsersTable() {
+
+
+    System.out.println("updateUsersTable");
     String[] colNameList = {"id", "name", "surname", "login"};
-    if (usersTable.getItems() != null) {
-        usersTable.getItems().clear();
-    }
+    //if (usersTable.getItems() != null) {
+    //    usersTable.getItems().clear();
+    //}
     usersIdColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
     usersEmailColumn.setCellValueFactory(new PropertyValueFactory<>("email"));
     usersPasswordColumn.setCellValueFactory(new PropertyValueFactory<>("password"));
     usersFirstnameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
     usersLastnameColumn.setCellValueFactory(new PropertyValueFactory<>("surname"));
     usersAccountTypeColumn.setCellValueFactory(new PropertyValueFactory<>("accountType")); // Assuming accountType property exists
-
-    // Add user data
     try {
         ObservableList<User> allUsers = UserManager.getAllUsersFromDB(db);
         usersTable.setItems(allUsers); // Set the items directly to the ObservableList
@@ -370,10 +378,14 @@ private void updateUsersTable() {
 
 
     //</editor-fold>
+
     //<editor-fold desc="Tab: Shop">
     //</editor-fold>
+
     //<editor-fold desc="Tab: Cart">
     //</editor-fold>
+
+    //<editor-fold desc="initialize()">
     @FXML
     private void initialize() {
         typeSelectorVinyl.setToggleGroup(tg);
@@ -394,12 +406,22 @@ private void updateUsersTable() {
         mss5.setOnAction(changeSleeveGrade);
         mss6.setOnAction(changeSleeveGrade);
         //
+        //primaryStage = (Stage) usersTable.getScene().getWindow();
+
+        //primaryStage.setTitle("muShop v0.0.1 - " + currentUser.getLogin());
 
         System.out.println("init!");
     }
+    //</editor-fold>
 
+    //<editor-fold desc="Set methods">
     public void setDBConnector(DBConnector dbConnector) {
         db = dbConnector;
     }
+
+    public void setLoggedInUser(User user) {
+        currentUser = user;
+    }
+    //</editor-fold>
 }
 

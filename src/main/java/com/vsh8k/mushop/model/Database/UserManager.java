@@ -56,8 +56,6 @@ public class UserManager {
     ObservableList<User> userList = FXCollections.observableArrayList();
     if (!db.isConnected()) {
         db.connect();
-    } else {
-        return null; // or throw an exception indicating the database connection issue
     }
 
     ResultSet resultSet = db.query("SELECT * FROM users");
@@ -94,6 +92,8 @@ public class UserManager {
         }
     } catch (SQLException e) {
         e.printStackTrace(); // Handle or log the exception appropriately
+    } finally {
+        db.connect();
     }
 
     return userList;
