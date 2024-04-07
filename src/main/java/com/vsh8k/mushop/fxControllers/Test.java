@@ -15,8 +15,8 @@ public class Test {
 
     public void createUser() {
 
-        Customer customer = new Customer(loginField.getText(), passwordField.getText(), nameField.getText(), surnameField.getText());
+        //Customer customer = new Customer(loginField.getText(), passwordField.getText(), nameField.getText(), surnameField.getText());
         //userList.getItems().clear();
-        userList.getItems().add(customer);
+        userList.getItems().add(null);
     }
 }

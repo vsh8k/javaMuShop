@@ -7,11 +7,8 @@ import com.vsh8k.mushop.model.Database.DBConnector;
 
 public class Login {
 
-    public static User validateAndGetUser(String username, String password) throws Exception {
-        String dbUrl = "jdbc:mysql://localhost:3306/products";
-        String dbUsername = "root";
-        String dbPassword = "";
-        DBConnector loginConnector = new DBConnector(dbUrl, dbUsername, dbPassword);
+    public static User validateAndGetUser(String username, String password, DBConnector loginConnector) throws Exception {
+
         loginConnector.connect();
         String storedHash = Hash.getStoredHash(username, loginConnector);
         if(!Hash.verifyPassword(password, storedHash)) {
@@ -20,17 +17,20 @@ public class Login {
         System.out.println(storedHash);
         ResultSet resultSet = loginConnector.query("SELECT * FROM users WHERE login = '" + username + "'");
         if(resultSet.next()) {
+            int id = resultSet.getInt("id");
             int userType = resultSet.getInt("account_level");
             User usr = null;
             String uName = resultSet.getString("login");
             String name = resultSet.getString("name");
             String sName = resultSet.getString("surname");
+            String email = resultSet.getString("email");
+            int accountLevel = resultSet.getInt("account_level");
             switch (userType) {
                 case 0:
-                    usr = new Manager(name, sName, uName, storedHash, false);
+                    usr = new Manager(id, name, sName, uName, storedHash, email, accountLevel, false);
                     break;
                 case 1:
-                    usr = new Manager(name, sName, uName, storedHash, true);
+                    usr = new Manager(id, name, sName, uName, storedHash, email, accountLevel, true);
                     break;
                 case 2:
                     LocalDate createDate = resultSet.getDate("dateCreated").toLocalDate();
@@ -38,11 +38,13 @@ public class Login {
                     String deliveryAddr = resultSet.getString("deliveryAddress");
                     String billingAddr = resultSet.getString("billingAddress");
                     LocalDate birthDate = resultSet.getDate("birthDate").toLocalDate();
-                    usr = new Customer(name, sName, uName, storedHash, cardDetails, deliveryAddr, billingAddr, birthDate);
+                    usr = new Customer(id, name, sName, uName, email, storedHash, accountLevel, cardDetails, deliveryAddr, billingAddr, birthDate);
                     break;
             }
+            loginConnector.disconnect();
             return usr;
         }
+        loginConnector.disconnect();
         return null;
     }
 }

@@ -10,6 +10,7 @@ module com.javacourse.courseprojectfx {
     requires java.sql;
 
     opens com.vsh8k.mushop to javafx.fxml;
+    opens com.vsh8k.mushop.model.AccountSystem to javafx.base;
     exports com.vsh8k.mushop;
     opens com.vsh8k.mushop.fxControllers to javafx.fxml;
     exports com.vsh8k.mushop.fxControllers to javafx.fxml;

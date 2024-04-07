@@ -3,6 +3,7 @@ package com.vsh8k.mushop.fxControllers;
 import com.vsh8k.mushop.mainApplication;
 import com.vsh8k.mushop.model.AccountSystem.Login;
 import com.vsh8k.mushop.model.AccountSystem.User;
+import com.vsh8k.mushop.model.Database.DBConnector;
 import com.vsh8k.mushop.model.Popup.Warning;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -44,11 +45,16 @@ public class LoginWindow {
         System.out.println("LOGIN");
         User user = null;
         try {
-            user = Login.validateAndGetUser(unameField.getText(), passField.getText());
+            String dbUrl = "jdbc:mysql://localhost:3306/products";
+            String dbUsername = "root";
+            String dbPassword = "";
+            DBConnector loginConnector = new DBConnector(dbUrl, dbUsername, dbPassword);
+            user = Login.validateAndGetUser(unameField.getText(), passField.getText(), loginConnector);
             FXMLLoader loader = new FXMLLoader(mainApplication.class.getResource("main-window.fxml"));
             try {
                 Parent root = loader.load();
                 MainWindow mainWindowController = loader.getController();
+                mainWindowController.setDBConnector(loginConnector);
                 Scene scene = new Scene(root);
                 scene.getStylesheets().add(mainApplication.class.getResource("bootstrap3.css").toExternalForm());
                 Stage primaryStage = (Stage) unameField.getScene().getWindow();

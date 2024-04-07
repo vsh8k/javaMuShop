@@ -11,7 +11,7 @@ import java.util.Calendar;
 
 @Getter
 @Setter
-public class Customer extends User {
+public final class Customer extends User {
 
     private String deliveryAddress;
     private String billingAddress;
@@ -21,18 +21,18 @@ public class Customer extends User {
     private CreditCard card;
 
 
-    public Customer(String name, String surname, String login, String password, String cardDetails, String deliveryAddress, String billingAddress, LocalDate birthDate) {
-        super(name, surname, login, password);
+    public Customer(int id, String name, String surname, String login, String email, String password, int accountType, String cardDetails, String deliveryAddress, String billingAddress, LocalDate birthDate) {
+        super(id, name, surname, login, password, email, accountType);
         String[] cardDetailsRaw;
         cardDetailsRaw = cardDetails.split("-");
         this.deliveryAddress = deliveryAddress;
         this.billingAddress = billingAddress;
         this.birthDate = birthDate;
-        this.card = new CreditCard(cardDetailsRaw[0], cardDetailsRaw[1], cardDetailsRaw[2], cardDetailsRaw[3]);
+        //this.card = new CreditCard(cardDetailsRaw[0], cardDetailsRaw[1], cardDetailsRaw[2], cardDetailsRaw[3]);
     }
 
-    public Customer(String name, String surname, String login, String password) {
-        super(name, surname, login, password);
+    public Customer(int id, String name, String surname, String login, String email, String password, int accountType) {
+        super(id, name, surname, login, password, email, accountType);
     }
 
     @Override

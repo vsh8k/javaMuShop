@@ -9,8 +9,8 @@ import lombok.Setter;
 public final class Manager extends User {
     private boolean isAdmin;
 
-    public Manager(String name, String surname, String login, String password, boolean isAdmin) {
-        super(name, surname, login, password);
+    public Manager(int id, String name, String surname, String login, String password, String email, int accountType, boolean isAdmin) {
+        super(id, name, surname, login, password, email, accountType);
         this.isAdmin = isAdmin;
     }
 

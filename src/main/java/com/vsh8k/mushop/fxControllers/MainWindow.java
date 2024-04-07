@@ -1,15 +1,24 @@
 package com.vsh8k.mushop.fxControllers;
 
 
+import com.vsh8k.mushop.model.AccountSystem.Manager;
+import com.vsh8k.mushop.model.AccountSystem.User;
 import com.vsh8k.mushop.model.Database.DBConnector;
+import com.vsh8k.mushop.model.Database.UserManager;
 import com.vsh8k.mushop.model.Misc.Validate;
 import com.vsh8k.mushop.model.Popup.Warning;
 import com.vsh8k.mushop.model.Shop.*;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.control.cell.TextFieldTableCell;
 import lombok.SneakyThrows;
 
 import java.net.URL;
@@ -18,14 +27,12 @@ import java.sql.SQLException;
 import java.sql.Time;
 import java.time.Year;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 
 public class MainWindow {
     //<editor-fold desc="DB Details">
-    String dbUrl = "jdbc:mysql://localhost:3306/products";
-    String dbUsername = "root";
-    String dbPassword = "";
-    private DBConnector db = new DBConnector(dbUrl, dbUsername, dbPassword);
+    private DBConnector db;
     private String mediaCols[] = {"title", "description", "qty", "weight", "price", "discount", "artist", "album", "release_year", "label", "total_length", "track_quantity", "media_grade", "sleeve_grade", "genre", "ean", "media_type"};
     private Object mediaValues[] = {};
     //</editor-fold>
@@ -318,7 +325,50 @@ private void updateProductList() {
         System.out.println("Product list updated");
 }
     //</editor-fold>
+
     //<editor-fold desc="Tab: Users">
+
+    @FXML
+    private TableView<User> usersTable;
+    @FXML
+    private TableColumn<User, Integer> usersIdColumn;
+    @FXML
+    private TableColumn<User, String> usersEmailColumn;
+    @FXML
+    private TableColumn<User, String> usersPasswordColumn;
+    @FXML
+    private TableColumn<User, String> usersFirstnameColumn;
+    @FXML
+    private TableColumn<User, String> usersLastnameColumn;
+    @FXML
+    private TableColumn<User, Integer> usersAccountTypeColumn;
+    @FXML
+    private final ObservableList<User> usersObservableList = FXCollections.observableArrayList();
+
+    @FXML
+private void updateUsersTable() {
+    String[] colNameList = {"id", "name", "surname", "login"};
+    if (usersTable.getItems() != null) {
+        usersTable.getItems().clear();
+    }
+    usersIdColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
+    usersEmailColumn.setCellValueFactory(new PropertyValueFactory<>("email"));
+    usersPasswordColumn.setCellValueFactory(new PropertyValueFactory<>("password"));
+    usersFirstnameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
+    usersLastnameColumn.setCellValueFactory(new PropertyValueFactory<>("surname"));
+    usersAccountTypeColumn.setCellValueFactory(new PropertyValueFactory<>("accountType")); // Assuming accountType property exists
+
+    // Add user data
+    try {
+        ObservableList<User> allUsers = UserManager.getAllUsersFromDB(db);
+        usersTable.setItems(allUsers); // Set the items directly to the ObservableList
+    } catch (Exception e) {
+        throw new RuntimeException(e);
+    }
+}
+
+
+
     //</editor-fold>
     //<editor-fold desc="Tab: Shop">
     //</editor-fold>
@@ -344,8 +394,12 @@ private void updateProductList() {
         mss5.setOnAction(changeSleeveGrade);
         mss6.setOnAction(changeSleeveGrade);
         //
+
         System.out.println("init!");
     }
 
+    public void setDBConnector(DBConnector dbConnector) {
+        db = dbConnector;
+    }
 }
 

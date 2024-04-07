@@ -8,6 +8,7 @@
 <?import javafx.scene.control.RadioButton?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -278,11 +279,25 @@
                </children></AnchorPane>
       </content>
     </Tab>
-    <Tab fx:id="usersTable" text="Users (Not Implemented)">
+    <Tab onSelectionChanged="#updateUsersTable" text="Users (In Progress)">
          <content>
             <AnchorPane prefHeight="200.0" prefWidth="200.0">
                <children>
-                  <TableView prefHeight="372.0" prefWidth="893.0" />
+                  <TableView fx:id="usersTable" prefHeight="372.0" prefWidth="886.0">
+                     <columnResizePolicy>
+                        <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                     </columnResizePolicy>
+                     <opaqueInsets>
+                        <Insets />
+                     </opaqueInsets>
+                     <columns>
+                        <TableColumn fx:id="usersIdColumn" prefWidth="69.0" text="ID" />
+                        <TableColumn fx:id="usersEmailColumn" prefWidth="241.0" text="Email" />
+                        <TableColumn fx:id="usersFirstnameColumn" prefWidth="172.0" text="First Name" />
+                        <TableColumn fx:id="usersLastnameColumn" prefWidth="160.0" text="Last Name" />
+                        <TableColumn fx:id="usersPasswordColumn" prefWidth="128.0" text="Password" />
+                        <TableColumn fx:id="usersAccountTypeColumn" prefWidth="96.0" text="Account Type" />
+                     </columns></TableView>
                </children>
             </AnchorPane>
          </content></Tab>
