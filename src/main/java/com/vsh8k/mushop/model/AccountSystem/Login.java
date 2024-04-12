@@ -26,13 +26,13 @@ public class Login {
             String email = resultSet.getString("email");
             int accountLevel = resultSet.getInt("account_level");
             switch (userType) {
-                case 0:
+                case 1:
                     usr = new Manager(id, name, sName, uName, storedHash, email, accountLevel, false);
                     break;
-                case 1:
+                case 2:
                     usr = new Manager(id, name, sName, uName, storedHash, email, accountLevel, true);
                     break;
-                case 2:
+                case 3:
                     LocalDate createDate = resultSet.getDate("dateCreated").toLocalDate();
                     String cardDetails = ""; //resultSet.getString("cc_details");
                     String deliveryAddr = resultSet.getString("deliveryAddress");

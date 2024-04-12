@@ -5,8 +5,10 @@ import javafx.scene.control.ButtonType;
 
 public class Warning {
 
+    private static Alert.AlertType alertType = Alert.AlertType.WARNING;
+
     public static void display(String title, String message) {
-        Alert alert = new Alert(Alert.AlertType.WARNING);
+        Alert alert = new Alert(alertType);
         alert.setTitle(title);
         alert.setHeaderText(null);
         alert.setContentText(message);

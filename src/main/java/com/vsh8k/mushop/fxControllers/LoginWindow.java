@@ -1,6 +1,7 @@
 package com.vsh8k.mushop.fxControllers;
 
 import com.vsh8k.mushop.mainApplication;
+import com.vsh8k.mushop.model.AccountSystem.Hash;
 import com.vsh8k.mushop.model.AccountSystem.Login;
 import com.vsh8k.mushop.model.AccountSystem.User;
 import com.vsh8k.mushop.model.Database.DBConnector;
@@ -55,16 +56,19 @@ public class LoginWindow {
                 Parent root = loader.load();
                 MainWindow mainWindowController = loader.getController();
                 mainWindowController.setDBConnector(loginConnector);
+                System.out.println(user);
+                mainWindowController.setUser(user);
                 Scene scene = new Scene(root);
-                scene.getStylesheets().add(mainApplication.class.getResource("bootstrap3.css").toExternalForm());
                 Stage primaryStage = (Stage) unameField.getScene().getWindow();
+                mainWindowController.setPrimaryStage(primaryStage);
                 primaryStage.setScene(scene);
                 primaryStage.show();
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
         } catch (Exception e) {
-            Warning.display("Error", e.getMessage());
+            //Warning.display("Error", e.getMessage());
+            e.printStackTrace();
         }
     }
 

@@ -1,5 +1,6 @@
 package com.vsh8k.mushop.fxControllers;
 
+import com.vsh8k.mushop.model.AccountSystem.Card;
 import com.vsh8k.mushop.model.Misc.Validate;
 import com.vsh8k.mushop.model.Popup.Warning;
 import javafx.fxml.FXML;
@@ -9,6 +10,8 @@ import javafx.scene.control.DatePicker;
 import javafx.scene.control.TextField;
 
 import java.sql.Date;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 public class RegistrationWindow {
 
@@ -82,6 +85,7 @@ public class RegistrationWindow {
             String cc = Validate.validateCreditCardNumber(ccField.getText(), "Credt Card Number");
             String yymm = Validate.validateAndConvertYYMM(yyField.getText(),  mmField.getText(), "Expiry Date");
             String cvv = Validate.validateCVV(cvvField.getText(), "CVV");
+            Card card = new Card(cc, LocalDate.parse(yymm, DateTimeFormatter.ofPattern("YY/MM")), cvv);
             String addr = Validate.validateAndConvertString(addrField.getText(), "Address");
             String city = Validate.validateAndConvertString(cityField.getText(), "City");
             String postcode = Validate.validateAndConvertString(postcodeField.getText(), "Postcode");

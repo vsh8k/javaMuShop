@@ -1,4 +1,5 @@
 package com.vsh8k.mushop.model.AccountSystem;
+import com.mysql.cj.exceptions.StreamingNotifiable;
 import com.vsh8k.mushop.model.Database.DBConnector;
 
 import java.security.NoSuchAlgorithmException;

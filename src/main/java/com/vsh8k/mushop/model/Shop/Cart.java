@@ -16,6 +16,5 @@ public class Cart{
     private List<Product> productList;
     private Customer customer;
     private LocalDate dateCreated;
-    private List<Comment> chat;
 }
 //Chat bus User:Message-User:Message

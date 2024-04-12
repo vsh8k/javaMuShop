@@ -1,10 +1,15 @@
 package com.vsh8k.mushop.fxControllers;
 
+import com.vsh8k.mushop.mainApplication;
+import com.vsh8k.mushop.model.AccountSystem.Hash;
 import com.vsh8k.mushop.model.AccountSystem.Manager;
 import com.vsh8k.mushop.model.AccountSystem.User;
 import com.vsh8k.mushop.model.Database.DBConnector;
 import com.vsh8k.mushop.model.Database.UserManager;
+import com.vsh8k.mushop.model.Misc.UserFilter;
 import com.vsh8k.mushop.model.Misc.Validate;
+import com.vsh8k.mushop.model.Popup.Information;
+import com.vsh8k.mushop.model.Popup.Repeat;
 import com.vsh8k.mushop.model.Popup.Warning;
 import com.vsh8k.mushop.model.Shop.*;
 import javafx.beans.property.SimpleObjectProperty;
@@ -13,11 +18,14 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.event.EventHandler;
+import javafx.event.EventType;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.ComboBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.control.cell.TextFieldListCell;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.stage.Stage;
 import lombok.SneakyThrows;
@@ -29,9 +37,24 @@ import java.sql.Time;
 import java.time.Year;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.ResourceBundle;
 
 public class MainWindow {
+    Stage primaryStage = null;
+    @FXML
+    Tab storeTab;
+    @FXML
+    Tab cartTab;
+    @FXML
+    Tab productsTab;
+    @FXML
+    Tab usersTab;
+    @FXML
+    Tab orderTab;
+    @FXML
+    TabPane tabs;
+
     //<editor-fold desc="DB Details">
     private DBConnector db;
     private String mediaCols[] = {"title", "description", "qty", "weight", "price", "discount", "artist", "album", "release_year", "label", "total_length", "track_quantity", "media_grade", "sleeve_grade", "genre", "ean", "media_type"};
@@ -42,10 +65,10 @@ public class MainWindow {
     User currentUser = null;
     //</editor-fold>
 
-    Stage primaryStage = null;
-
     //<editor-fold desc="Tab: Products">
     private ArrayList<Product> products = new ArrayList<>();
+    @FXML
+    private TextField productsSearchBar;
     @FXML
     private ListView<Product> productList;
     @FXML
@@ -323,7 +346,13 @@ private void loadProductData() {
 @FXML
 private void updateProductList() {
         productList.getItems().clear();
-        products = Media.getAllProductsFromDB(db);
+        String searchString = productsSearchBar.getText();
+        if(searchString.isEmpty()) {
+            products = Media.getAllProductsFromDB(db);
+        }
+        else {
+            products = Media.searchProductsFromDB(db, searchString);
+        }
         for (Product product : products) {
             productList.getItems().add(product);
             product.getCommentsFromDB(db);
@@ -342,6 +371,8 @@ private void updateProductList() {
     @FXML
     private TableColumn<User, String> usersEmailColumn;
     @FXML
+    private TableColumn<User, String> usersLoginColumn;
+    @FXML
     private TableColumn<User, String> usersPasswordColumn;
     @FXML
     private TableColumn<User, String> usersFirstnameColumn;
@@ -351,30 +382,87 @@ private void updateProductList() {
     private TableColumn<User, Integer> usersAccountTypeColumn;
     @FXML
     private final ObservableList<User> usersObservableList = FXCollections.observableArrayList();
+    @FXML
+    private ContextMenu contextMenuUsers;
+    @FXML
+    private MenuItem usersContextItem1;
+    @FXML
+    private MenuItem usersContextItem2;
+    @FXML
+    private ComboBox filterSelect;
+    @FXML
+    private TextField filterText;
 
     @FXML
 private void updateUsersTable() {
-
-
     System.out.println("updateUsersTable");
-    String[] colNameList = {"id", "name", "surname", "login"};
-    //if (usersTable.getItems() != null) {
-    //    usersTable.getItems().clear();
-    //}
-    usersIdColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
-    usersEmailColumn.setCellValueFactory(new PropertyValueFactory<>("email"));
-    usersPasswordColumn.setCellValueFactory(new PropertyValueFactory<>("password"));
-    usersFirstnameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
-    usersLastnameColumn.setCellValueFactory(new PropertyValueFactory<>("surname"));
-    usersAccountTypeColumn.setCellValueFactory(new PropertyValueFactory<>("accountType")); // Assuming accountType property exists
     try {
         ObservableList<User> allUsers = UserManager.getAllUsersFromDB(db);
-        usersTable.setItems(allUsers); // Set the items directly to the ObservableList
+        usersTable.setItems(allUsers);
     } catch (Exception e) {
         throw new RuntimeException(e);
     }
 }
 
+
+
+@FXML
+private void filterOnClick(){
+    System.out.println("filterUsersTable");
+    String filterCriteria = filterSelect.getSelectionModel().getSelectedItem().toString();
+    System.out.println(filterCriteria);
+    String filterValue = filterText.getText();
+    ObservableList<User> filteredUsers = FXCollections.observableArrayList();
+
+    try {
+        ObservableList<User> allUsers = UserManager.getAllUsersFromDB(db);
+
+        for (User user : allUsers) {
+            switch (filterCriteria) {
+                case "Id":
+                    System.out.println("ID");
+                    try {
+                        int idFilter = Validate.validateAndConvertInteger(filterValue, "Filter text");
+                        if (user.getId() == idFilter) {
+                            filteredUsers.add(user);
+                        }
+                    } catch (Validate.ValidationException e) {
+                        // Handle validation error
+                        System.err.println("Validation error: " + e.getMessage());
+                    }
+                    break;
+                case "Name":
+                    if (Objects.equals(user.getName(), filterValue)) {
+                        filteredUsers.add(user);
+                    }
+                    break;
+                case "Surname":
+                    if (Objects.equals(user.getSurname(), filterValue)) {
+                        filteredUsers.add(user);
+                    }
+                    break;
+                case "AccountType":
+                    try {
+                        int accountTypeFilter = Validate.validateAndConvertInteger(filterValue, "Filter text");
+                        if (user.getAccountType() == accountTypeFilter) {
+                            filteredUsers.add(user);
+                        }
+                    } catch (Validate.ValidationException e) {
+                        // Handle validation error
+                        System.err.println("Validation error: " + e.getMessage());
+                    }
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        usersTable.setItems(filteredUsers);
+    } catch (Exception e) {
+        // Handle other exceptions
+        System.err.println("Error: " + e.getMessage());
+    }
+}
 
 
     //</editor-fold>
@@ -386,8 +474,10 @@ private void updateUsersTable() {
     //</editor-fold>
 
     //<editor-fold desc="initialize()">
+
     @FXML
     private void initialize() {
+
         typeSelectorVinyl.setToggleGroup(tg);
         typeSelectorCass.setToggleGroup(tg);
         typeSelectorCD.setToggleGroup(tg);
@@ -405,10 +495,161 @@ private void updateUsersTable() {
         mss4.setOnAction(changeSleeveGrade);
         mss5.setOnAction(changeSleeveGrade);
         mss6.setOnAction(changeSleeveGrade);
-        //
-        //primaryStage = (Stage) usersTable.getScene().getWindow();
 
-        //primaryStage.setTitle("muShop v0.0.1 - " + currentUser.getLogin());
+        //USERS
+
+        usersTable.setEditable(true);
+
+        usersIdColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
+        usersEmailColumn.setCellValueFactory(new PropertyValueFactory<>("email"));
+        usersPasswordColumn.setCellValueFactory(new PropertyValueFactory<>("password"));
+        usersFirstnameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
+        usersLastnameColumn.setCellValueFactory(new PropertyValueFactory<>("surname"));
+        usersAccountTypeColumn.setCellValueFactory(new PropertyValueFactory<>("accountType"));
+        usersLoginColumn.setCellValueFactory(new PropertyValueFactory<>("login"));
+
+
+        //<editor-fold desc="Table Col: Email">
+        usersEmailColumn.setCellFactory(TextFieldTableCell.forTableColumn());
+        usersEmailColumn.setOnEditCommit(event -> {
+            try {
+                System.out.println(event.getOldValue());
+                User user = event.getRowValue();
+                user.setEmail(Validate.validateEmail(event.getNewValue(),"Email"));
+                System.out.println(event.getNewValue());
+                UserManager.updateUser(db, user, "email");
+            } catch (Exception e) {
+                Warning.display("Error", e.getMessage());
+                TableView<User> tableView = event.getTableView();
+                TableColumn<User, String> col = event.getTableColumn();
+                int row = event.getTablePosition().getRow();
+                tableView.getItems().get(row).setEmail(event.getOldValue());
+                tableView.refresh();
+            }
+        });
+        //</editor-fold>
+
+        //<editor-fold desc="Table Col: Login">
+        usersLoginColumn.setCellFactory(TextFieldTableCell.forTableColumn());
+        usersLoginColumn.setOnEditCommit(event -> {
+            try {
+                System.out.println(event.getOldValue());
+                User user = event.getRowValue();
+                user.setLogin(Validate.validateAndConvertString(event.getNewValue(),"Login"));
+                System.out.println(event.getNewValue());
+                UserManager.updateUser(db, user, "login");
+            } catch (Exception e) {
+                Warning.display("Error", e.getMessage());
+                TableView<User> tableView = event.getTableView();
+                TableColumn<User, String> col = event.getTableColumn();
+                int row = event.getTablePosition().getRow();
+                tableView.getItems().get(row).setLogin(event.getOldValue());
+                tableView.refresh();
+            }
+        });
+        //</editor-fold>
+
+        //<editor-fold desc="Table Col: First Name">
+        usersFirstnameColumn.setCellFactory(TextFieldTableCell.forTableColumn());
+        usersFirstnameColumn.setOnEditCommit(event -> {
+            try {
+                System.out.println(event.getOldValue());
+                User user = event.getRowValue();
+                user.setName(Validate.validateAndConvertString(event.getNewValue(),"First Name"));
+                System.out.println(event.getNewValue());
+                UserManager.updateUser(db, user, "name");
+            } catch (Exception e) {
+                Warning.display("Error", e.getMessage());
+                TableView<User> tableView = event.getTableView();
+                TableColumn<User, String> col = event.getTableColumn();
+                int row = event.getTablePosition().getRow();
+                tableView.getItems().get(row).setEmail(event.getOldValue());
+                tableView.refresh();
+            }
+        });
+        //</editor-fold>
+
+        //<editor-fold desc="Table Col: Last Name">
+        usersLastnameColumn.setCellFactory(TextFieldTableCell.forTableColumn());
+        usersLastnameColumn.setOnEditCommit(event -> {
+            try {
+                System.out.println(event.getOldValue());
+                User user = event.getRowValue();
+                user.setSurname(Validate.validateAndConvertString(event.getNewValue(),"Last Name"));
+                System.out.println(event.getNewValue());
+                UserManager.updateUser(db, user, "surname");
+            } catch (Exception e) {
+                Warning.display("Error", e.getMessage());
+                TableView<User> tableView = event.getTableView();
+                TableColumn<User, String> col = event.getTableColumn();
+                int row = event.getTablePosition().getRow();
+                tableView.getItems().get(row).setEmail(event.getOldValue());
+                tableView.refresh();
+            }
+        });
+        //</editor-fold>
+
+        //<editor-fold desc="Table Col: Password">
+        usersPasswordColumn.setCellFactory(TextFieldTableCell.forTableColumn());
+        usersPasswordColumn.setOnEditCommit(event -> {
+            try {
+                String baseVal = event.getOldValue();
+                User user = event.getRowValue();
+                user.setPassword(Hash.createHash(Validate.validateEquals(Validate.validatePassword(event.getNewValue(), "Password"), Repeat.repeatFieldValue("Password"), "Password")));
+                UserManager.updateUser(db, user, "hash");
+                System.out.println(user.getPassword());
+                Information.display("Password changed", "New password for user \"" + user.getLogin() + "\" is \"" + event.getNewValue() + "\"");
+
+                TableView<User> tableView = event.getTableView();
+                TableColumn<User, String> col = event.getTableColumn();
+                int row = event.getTablePosition().getRow();
+                tableView.getItems().get(row).setPassword("");
+                tableView.refresh();
+            } catch (Exception e) {
+                Warning.display("Error", e.getMessage());
+                TableView<User> tableView = event.getTableView();
+                TableColumn<User, String> col = event.getTableColumn();
+                int row = event.getTablePosition().getRow();
+                tableView.getItems().get(row).setEmail(event.getOldValue());
+                tableView.refresh();
+            }
+        });
+        //</editor-fold>
+
+        //<editor-fold desc="Table Col: Acccount Type">
+        ObservableList<Integer> options = FXCollections.observableArrayList(1, 2, 3);
+        usersAccountTypeColumn.setCellFactory(ComboBoxTableCell.forTableColumn(options));
+        usersAccountTypeColumn.setOnEditCommit(event -> {
+            try {
+                User user = event.getRowValue();
+                user.setAccountType(event.getNewValue());
+                UserManager.updateUser(db, user, "account_level");
+            } catch (Exception e) {
+                Warning.display("Error", e.getMessage());
+            }
+        });
+        //</editor-fold>
+
+        usersContextItem1 = new MenuItem("Add");
+        usersContextItem2 = new MenuItem("Remove");
+        contextMenuUsers = new ContextMenu();
+        contextMenuUsers.getItems().addAll(usersContextItem1, usersContextItem2);
+
+        usersContextItem2.setOnAction(event -> {
+            try {
+                db.delete("users", "id", usersTable.getSelectionModel().getSelectedItem().getId());
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+            usersTable.getItems().remove(usersTable.getSelectionModel().getSelectedItem());
+            usersTable.refresh();
+            // Add code to perform action 1 here
+        });
+        usersTable.setContextMenu(contextMenuUsers);
+
+        filterSelect.getItems().setAll(UserFilter.values());
+
+        filterSelect.getSelectionModel().select(0);
 
         System.out.println("init!");
     }
@@ -419,8 +660,21 @@ private void updateUsersTable() {
         db = dbConnector;
     }
 
-    public void setLoggedInUser(User user) {
+    public void setUser (User user)
+    {
+        System.out.println(user);
         currentUser = user;
+        if(user.getAccountType() >= 3)
+        {
+            tabs.getTabs().remove(productsTab);
+            tabs.getTabs().remove(usersTab);
+            tabs.getTabs().remove(orderTab);
+        }
+    };
+
+    public void setPrimaryStage(Stage stage) {
+        primaryStage = stage;
+        primaryStage.setTitle("muShop " + mainApplication.getVersion() + ", logged in as: " + currentUser.getLogin());
     }
     //</editor-fold>
 }

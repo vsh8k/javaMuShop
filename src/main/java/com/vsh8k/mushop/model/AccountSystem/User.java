@@ -10,7 +10,6 @@ import lombok.Setter;
 
 import java.io.Serializable;
 import java.time.LocalDate;
-@Setter
 public abstract class User{
     protected SimpleIntegerProperty id = new SimpleIntegerProperty();
     protected SimpleStringProperty name = new SimpleStringProperty();
@@ -55,10 +54,38 @@ public abstract class User{
     }
 
     public String getPassword() {
-        return "Hey, it's not your data!";
+        return password.get();
     }
 
     public String getLogin() {
         return login.get();
+    }
+
+    public void setId(int id) {
+        this.id.set(id);
+    }
+
+    public void setName(String name) {
+        this.name.set(name);
+    }
+
+    public void setSurname(String surname) {
+        this.surname.set(surname);
+    }
+
+    public void setLogin(String login) {
+        this.login.set(login);
+    }
+
+    public void setPassword(String password) {
+        this.password.set(password);
+    }
+
+    public void setAccountType(int accountType) {
+        this.accountType.set(accountType);
+    }
+
+    public void setEmail(String email) {
+        this.email.set(email);
     }
 }

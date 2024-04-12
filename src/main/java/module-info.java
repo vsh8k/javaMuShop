@@ -8,6 +8,8 @@ module com.javacourse.courseprojectfx {
     requires jakarta.persistence;
     requires org.apache.commons.codec;
     requires java.sql;
+    requires java.smartcardio;
+    requires java.compiler;
 
     opens com.vsh8k.mushop to javafx.fxml;
     opens com.vsh8k.mushop.model.AccountSystem to javafx.base;

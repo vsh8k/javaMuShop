@@ -11,15 +11,8 @@ public final class Manager extends User {
 
     public Manager(int id, String name, String surname, String login, String password, String email, int accountType, boolean isAdmin) {
         super(id, name, surname, login, password, email, accountType);
-        this.isAdmin = isAdmin;
-    }
-
-    @Override
-    public String toString() {
-        return "Manager{" +
-                "isAdmin=" + isAdmin +
-                ", name='" + name + '\'' +
-                ", surname='" + surname + '\'' +
-                '}';
+        if(accountType > 2) {
+            isAdmin = true;
+        }
     }
 }
