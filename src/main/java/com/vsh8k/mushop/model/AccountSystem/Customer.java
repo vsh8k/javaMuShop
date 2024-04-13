@@ -13,6 +13,7 @@ import java.util.Calendar;
 @Setter
 public final class Customer extends User {
 
+    private String phoneNumber;
     private String deliveryAddress;
     private String billingAddress;
     private LocalDate birthDate;

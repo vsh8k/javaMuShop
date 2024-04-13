@@ -140,17 +140,20 @@ public class UserManager {
         String login = user.getLogin();
         String hash = user.getPassword();
         int accountType = user.getAccountType();
+        String email = user.getEmail();
+        String phoneNumber = null;
         String deliveryAddr = null;
         String billingAddr = null;
         Date birthDate = null;
         if (user instanceof Customer) {
             Customer cust = (Customer) user;
+            phoneNumber = cust.getPhoneNumber();
             deliveryAddr = cust.getDeliveryAddress();
             billingAddr = cust.getBillingAddress();
             birthDate = Date.valueOf(cust.getBirthDate());
         }
-        String cols[] = {"id", "name", "surname", "login", "hash", "account_level", "deliveryAddress", "billingAddress", "birthDate"};
-        Object vals[] = {id, name, surname, login, hash, accountType, deliveryAddr, billingAddr, birthDate};
+        String[] cols = {"name", "surname", "login", "email", "phone", "hash", "account_level", "deliveryAddress", "billingAddress", "birthDate"};
+        Object[] vals = {name, surname, login, email, phoneNumber, hash, accountType, deliveryAddr, billingAddr, birthDate};
         db.connect();
         db.insert("users", cols, vals);
         db.disconnect();

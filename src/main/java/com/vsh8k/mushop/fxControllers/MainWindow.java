@@ -5,6 +5,7 @@ import com.vsh8k.mushop.model.AccountSystem.Hash;
 import com.vsh8k.mushop.model.AccountSystem.Manager;
 import com.vsh8k.mushop.model.AccountSystem.User;
 import com.vsh8k.mushop.model.Database.DBConnector;
+import com.vsh8k.mushop.model.Database.ProductManager;
 import com.vsh8k.mushop.model.Database.UserManager;
 import com.vsh8k.mushop.model.Misc.UserFilter;
 import com.vsh8k.mushop.model.Misc.Validate;
@@ -20,7 +21,9 @@ import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.event.EventType;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.ComboBoxTableCell;
@@ -30,6 +33,7 @@ import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.stage.Stage;
 import lombok.SneakyThrows;
 
+import java.io.IOException;
 import java.net.URL;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -57,7 +61,7 @@ public class MainWindow {
 
     //<editor-fold desc="DB Details">
     private DBConnector db;
-    private String mediaCols[] = {"title", "description", "qty", "weight", "price", "discount", "artist", "album", "release_year", "label", "total_length", "track_quantity", "media_grade", "sleeve_grade", "genre", "ean", "media_type"};
+    private String mediaCols[] = {"title", "description", "qty", "weight", "price", "discount", "artist", "album", "release_year", "label", "total_length", "track_quantity", "media_grade", "sleeve_grade", "genre", "ean", "media_type", "image_url", "vinyl_rpm"};
     private Object mediaValues[] = {};
     //</editor-fold>
 
@@ -138,6 +142,10 @@ public class MainWindow {
     private TextField qtyField;
     @FXML
     private TextField priceField;
+    @FXML
+    private TextField urlField;
+    @FXML
+    private ComboBox speedSelector;
 
     //<editor-fold desc="CRUD Buttons">
     @FXML
@@ -170,8 +178,10 @@ public class MainWindow {
     private String sleeveGrade;
     private String genre;
     private String mediaType;
+    private String imageURL;
+    private Vinyl.VinylSpeed vinylSpeed;
 
-    private void readValidateDataFromUI() throws Exception{
+    private void readValidateDataFromUI() throws Exception {
         qty = Validate.validateAndConvertInteger(qtyField.getText(), "Quantity");
         weight = Validate.validateAndConvertFloat(weightField.getText(), "Weight");
         price = Validate.validateAndConvertFloat(priceField.getText(), "Price");
@@ -189,8 +199,16 @@ public class MainWindow {
         mediaType = Validate.validateAndConvertString(type, "Media Type");
         title = artist + "-" + album;
         description = "";
-        mediaValues = new Object[]{title, description, qty, weight, price, discount, artist, album, releaseYear, label, totalLen, trackQty, mediaGrade, sleeveGrade, genre, ean, mediaType};
+        imageURL = Validate.validateAndConvertString(urlField.getText(), "Image URL");
+        if (speedSelector.isDisabled()) {
+            vinylSpeed = null;
+            mediaValues = new Object[]{title, description, qty, weight, price, discount, artist, album, releaseYear, label, totalLen, trackQty, mediaGrade, sleeveGrade, genre, ean, mediaType, imageURL, vinylSpeed};
+        } else {
+            vinylSpeed = (Vinyl.VinylSpeed) speedSelector.getSelectionModel().getSelectedItem();
+            mediaValues = new Object[]{title, description, qty, weight, price, discount, artist, album, releaseYear, label, totalLen, trackQty, mediaGrade, sleeveGrade, genre, ean, mediaType, imageURL, vinylSpeed.getValue()};
+        }
     }
+
 
     //</editor-fold>
 
@@ -198,16 +216,21 @@ public class MainWindow {
     @FXML
     private void selectTypeCD() {
         type = "CD";
+        speedSelector.setDisable(true);
         System.out.println(type);
     }
+
     @FXML
     private void selectTypeVinyl() {
         type = "Vinyl";
+        speedSelector.setDisable(false);
         System.out.println(type);
     }
+
     @FXML
     private void selectTypeCass() {
         type = "Cass";
+        speedSelector.setDisable(true);
         System.out.println(type);
     }
     //</editor-fold>
@@ -215,26 +238,32 @@ public class MainWindow {
     //<editor-fold desc="EventHandlers for MenuButtons">
     @FXML
     EventHandler<ActionEvent> changeMediaGrade = new EventHandler<ActionEvent>() {
-        public void handle(ActionEvent e)
-        {
-            mediaGradeSelector.setText(((MenuItem)e.getSource()).getText());
+        public void handle(ActionEvent e) {
+            mediaGradeSelector.setText(((MenuItem) e.getSource()).getText());
         }
     };
     @FXML
     EventHandler<ActionEvent> changeSleeveGrade = new EventHandler<ActionEvent>() {
-        public void handle(ActionEvent e)
-        {
-            sleeveGradeSelector.setText(((MenuItem)e.getSource()).getText());
+        public void handle(ActionEvent e) {
+            sleeveGradeSelector.setText(((MenuItem) e.getSource()).getText());
         }
     };
+
     //</editor-fold>
     @FXML
-    private void addButtonOnClick()
-    {
+    private void addButtonOnClick() {
         try {
-
+            Media media = null;
             readValidateDataFromUI();
-            Media media = new Media(0, title, description, qty, weight, price, discount, artist, album, releaseYear, label, totalLen, trackQty, mediaGrade, sleeveGrade, genre, ean, mediaType);
+            if (mediaType.equals("Vinyl")) {
+                media = new Vinyl(0, title, description, qty, weight, price, discount, artist, album, releaseYear, label, totalLen, trackQty, mediaGrade, sleeveGrade, genre, ean, mediaType, imageURL, vinylSpeed); //TRN
+            }
+            if (mediaType.equals("Cassette")) {
+                media = new Cass(0, title, description, qty, weight, price, discount, artist, album, releaseYear, label, totalLen, trackQty, mediaGrade, sleeveGrade, genre, ean, mediaType, imageURL); //TRN
+            }
+            if (mediaType.equals("CD")) {
+                media = new CD(0, title, description, qty, weight, price, discount, artist, album, releaseYear, label, totalLen, trackQty, mediaGrade, sleeveGrade, genre, ean, mediaType, imageURL); //TRN
+            }
             productList.getItems().add(media);
             db.connect();
             db.insert("media", mediaCols, mediaValues);
@@ -244,14 +273,14 @@ public class MainWindow {
             Warning.display("Validation error!", e.getMessage());
         }
     }
+
     @FXML
     private void deleteRecord() {
         //FEP: Add Confirmation Dialog
         try {
             db.connect();
             Object selectedItem = productList.getSelectionModel().getSelectedItem();
-            if(selectedItem instanceof Product selectedProduct)
-            {
+            if (selectedItem instanceof Product selectedProduct) {
                 db.delete("media", "id", selectedProduct.getId());
                 db.disconnect();
             }
@@ -261,97 +290,105 @@ public class MainWindow {
         }
 
     }
+
     @FXML
     void updateRecord() {
         try {
             readValidateDataFromUI();
             db.connect();
             Object selectedItem = productList.getSelectionModel().getSelectedItem();
-        if (selectedItem instanceof Media media) {
-                for(int i = 0; i < mediaCols.length; i++){
+            if (selectedItem instanceof Media media) {
+                for (int i = 0; i < mediaCols.length; i++) {
                     db.update("media", mediaCols[i], mediaValues[i], "id", media.getId());
                 }
                 db.disconnect();
-            media.setTitle(title);
-            media.setDescription(description);
-            media.setQty(qty);
-            media.setWeight(weight);
-            media.setPrice(price);
-            media.setDiscount(discount);
-            media.setArtist(artist);
-            media.setAlbum(album);
-            media.setReleaseYear(releaseYear);
-            media.setLabel(label);
-            media.setTotalLen(totalLen);
-            media.setTrackQty(trackQty);
-            media.setMediaGrade(mediaGrade);
-            media.setSleeveGrade(sleeveGrade);
-            media.setGenre(genre);
-            media.setEan(ean);
-            media.setMediaType(mediaType);
-            productList.refresh();
-        }
+                media.setTitle(title);
+                media.setDescription(description);
+                media.setQty(qty);
+                media.setWeight(weight);
+                media.setPrice(price);
+                media.setDiscount(discount);
+                media.setArtist(artist);
+                media.setAlbum(album);
+                media.setReleaseYear(releaseYear);
+                media.setLabel(label);
+                media.setTotalLen(totalLen);
+                media.setTrackQty(trackQty);
+                media.setMediaGrade(mediaGrade);
+                media.setSleeveGrade(sleeveGrade);
+                media.setGenre(genre);
+                media.setEan(ean);
+                media.setMediaType(mediaType);
+                productList.refresh();
+            }
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
+
     @FXML
-    private void editComments(){
+    private void editComments() {
 
     }
-@FXML
-private void loadProductData() {
 
-    Product product = productList.getSelectionModel().getSelectedItem();
-    if (product instanceof Media) {
-        Media media = (Media) product;
-        yearField.setText(String.valueOf(media.getReleaseYear()));
-        artistField.setText(media.getArtist());
-        albumField.setText(media.getAlbum());
-        labelField.setText(media.getLabel());
-        tracksField.setText(Integer.toString(media.getTrackQty()));
-        lengthField.setText(String.valueOf(media.getTotalLen()));
-        mediaGradeSelector.setText(media.getMediaGrade());
-        sleeveGradeSelector.setText(media.getSleeveGrade());
-        switch (media.getMediaType()) {
-            case "CD":
-                selectTypeCD();
-                typeSelectorCD.fire();
-                break;
-            case "Cass":
-                selectTypeCass();
-                typeSelectorCass.fire();
-                break;
-            case "Vinyl":
-                selectTypeVinyl();
-                typeSelectorVinyl.fire();
-                break;
-        }
-        genreField.setText(media.getGenre());
-        weightField.setText(Float.toString(media.getWeight()));
-        discountField.setText(Integer.toString(media.getDiscount()));
-        eanField.setText(media.getEan());
-        qtyField.setText(Integer.toString(media.getQty()));
-        priceField.setText(Float.toString(media.getPrice()));
+    @FXML
+    private void loadProductData() {
 
-        try {
-            // Read and validate data after setting all fields
-            readValidateDataFromUI();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+        Product product = productList.getSelectionModel().getSelectedItem();
+        if (product instanceof Media) {
+            Media media = (Media) product;
+            yearField.setText(String.valueOf(media.getReleaseYear()));
+            artistField.setText(media.getArtist());
+            albumField.setText(media.getAlbum());
+            labelField.setText(media.getLabel());
+            tracksField.setText(Integer.toString(media.getTrackQty()));
+            lengthField.setText(String.valueOf(media.getTotalLen()));
+            mediaGradeSelector.setText(media.getMediaGrade());
+            sleeveGradeSelector.setText(media.getSleeveGrade());
+            switch (media) {
+                case CD cd -> {
+                    selectTypeCD();
+                    typeSelectorCD.fire();
+                }
+                case Vinyl vinyl -> {
+                    selectTypeVinyl();
+                    typeSelectorVinyl.fire();
+                    speedSelector.getSelectionModel().select(vinyl.getVinylSpeed());
+                    System.out.println(speedSelector.getSelectionModel().getSelectedItem());
+                }
+                case Cass cass -> {
+                    selectTypeCass();
+                    typeSelectorCass.fire();
+                }
+                default -> {
+                }
+            }
+            urlField.setText(media.getImageURL());
+            genreField.setText(media.getGenre());
+            weightField.setText(Float.toString(media.getWeight()));
+            discountField.setText(Integer.toString(media.getDiscount()));
+            eanField.setText(media.getEan());
+            qtyField.setText(Integer.toString(media.getQty()));
+            priceField.setText(Float.toString(media.getPrice()));
+
+            try {
+                // Read and validate data after setting all fields
+                readValidateDataFromUI();
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
         }
     }
-}
-@SneakyThrows
-@FXML
-private void updateProductList() {
+
+    @SneakyThrows
+    @FXML
+    private void updateProductList() {
         productList.getItems().clear();
         String searchString = productsSearchBar.getText();
-        if(searchString.isEmpty()) {
-            products = Media.getAllProductsFromDB(db);
-        }
-        else {
-            products = Media.searchProductsFromDB(db, searchString);
+        if (searchString.isEmpty()) {
+            products = ProductManager.getAllProductsFromDB(db);
+        } else {
+            products = ProductManager.searchProductsFromDB(db, searchString);
         }
         for (Product product : products) {
             productList.getItems().add(product);
@@ -359,7 +396,7 @@ private void updateProductList() {
             //KOMENTARAI IS DB
         }
         System.out.println("Product list updated");
-}
+    }
     //</editor-fold>
 
     //<editor-fold desc="Tab: Users">
@@ -394,75 +431,74 @@ private void updateProductList() {
     private TextField filterText;
 
     @FXML
-private void updateUsersTable() {
-    System.out.println("updateUsersTable");
-    try {
-        ObservableList<User> allUsers = UserManager.getAllUsersFromDB(db);
-        usersTable.setItems(allUsers);
-    } catch (Exception e) {
-        throw new RuntimeException(e);
-    }
-}
-
-
-
-@FXML
-private void filterOnClick(){
-    System.out.println("filterUsersTable");
-    String filterCriteria = filterSelect.getSelectionModel().getSelectedItem().toString();
-    System.out.println(filterCriteria);
-    String filterValue = filterText.getText();
-    ObservableList<User> filteredUsers = FXCollections.observableArrayList();
-
-    try {
-        ObservableList<User> allUsers = UserManager.getAllUsersFromDB(db);
-
-        for (User user : allUsers) {
-            switch (filterCriteria) {
-                case "Id":
-                    System.out.println("ID");
-                    try {
-                        int idFilter = Validate.validateAndConvertInteger(filterValue, "Filter text");
-                        if (user.getId() == idFilter) {
-                            filteredUsers.add(user);
-                        }
-                    } catch (Validate.ValidationException e) {
-                        // Handle validation error
-                        System.err.println("Validation error: " + e.getMessage());
-                    }
-                    break;
-                case "Name":
-                    if (Objects.equals(user.getName(), filterValue)) {
-                        filteredUsers.add(user);
-                    }
-                    break;
-                case "Surname":
-                    if (Objects.equals(user.getSurname(), filterValue)) {
-                        filteredUsers.add(user);
-                    }
-                    break;
-                case "AccountType":
-                    try {
-                        int accountTypeFilter = Validate.validateAndConvertInteger(filterValue, "Filter text");
-                        if (user.getAccountType() == accountTypeFilter) {
-                            filteredUsers.add(user);
-                        }
-                    } catch (Validate.ValidationException e) {
-                        // Handle validation error
-                        System.err.println("Validation error: " + e.getMessage());
-                    }
-                    break;
-                default:
-                    break;
-            }
+    private void updateUsersTable() {
+        System.out.println("updateUsersTable");
+        try {
+            ObservableList<User> allUsers = UserManager.getAllUsersFromDB(db);
+            usersTable.setItems(allUsers);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
-
-        usersTable.setItems(filteredUsers);
-    } catch (Exception e) {
-        // Handle other exceptions
-        System.err.println("Error: " + e.getMessage());
     }
-}
+
+
+    @FXML
+    private void filterOnClick() {
+        System.out.println("filterUsersTable");
+        String filterCriteria = filterSelect.getSelectionModel().getSelectedItem().toString();
+        System.out.println(filterCriteria);
+        String filterValue = filterText.getText();
+        ObservableList<User> filteredUsers = FXCollections.observableArrayList();
+
+        try {
+            ObservableList<User> allUsers = UserManager.getAllUsersFromDB(db);
+
+            for (User user : allUsers) {
+                switch (filterCriteria) {
+                    case "Id":
+                        System.out.println("ID");
+                        try {
+                            int idFilter = Validate.validateAndConvertInteger(filterValue, "Filter text");
+                            if (user.getId() == idFilter) {
+                                filteredUsers.add(user);
+                            }
+                        } catch (Validate.ValidationException e) {
+                            // Handle validation error
+                            System.err.println("Validation error: " + e.getMessage());
+                        }
+                        break;
+                    case "Name":
+                        if (Objects.equals(user.getName(), filterValue)) {
+                            filteredUsers.add(user);
+                        }
+                        break;
+                    case "Surname":
+                        if (Objects.equals(user.getSurname(), filterValue)) {
+                            filteredUsers.add(user);
+                        }
+                        break;
+                    case "AccountType":
+                        try {
+                            int accountTypeFilter = Validate.validateAndConvertInteger(filterValue, "Filter text");
+                            if (user.getAccountType() == accountTypeFilter) {
+                                filteredUsers.add(user);
+                            }
+                        } catch (Validate.ValidationException e) {
+                            // Handle validation error
+                            System.err.println("Validation error: " + e.getMessage());
+                        }
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+            usersTable.setItems(filteredUsers);
+        } catch (Exception e) {
+            // Handle other exceptions
+            System.err.println("Error: " + e.getMessage());
+        }
+    }
 
 
     //</editor-fold>
@@ -481,6 +517,8 @@ private void filterOnClick(){
         typeSelectorVinyl.setToggleGroup(tg);
         typeSelectorCass.setToggleGroup(tg);
         typeSelectorCD.setToggleGroup(tg);
+
+        speedSelector.getItems().addAll(Vinyl.VinylSpeed.values());
 
         mgs1.setOnAction(changeMediaGrade);
         mgs2.setOnAction(changeMediaGrade);
@@ -508,14 +546,13 @@ private void filterOnClick(){
         usersAccountTypeColumn.setCellValueFactory(new PropertyValueFactory<>("accountType"));
         usersLoginColumn.setCellValueFactory(new PropertyValueFactory<>("login"));
 
-
         //<editor-fold desc="Table Col: Email">
         usersEmailColumn.setCellFactory(TextFieldTableCell.forTableColumn());
         usersEmailColumn.setOnEditCommit(event -> {
             try {
                 System.out.println(event.getOldValue());
                 User user = event.getRowValue();
-                user.setEmail(Validate.validateEmail(event.getNewValue(),"Email"));
+                user.setEmail(Validate.validateEmail(event.getNewValue(), "Email"));
                 System.out.println(event.getNewValue());
                 UserManager.updateUser(db, user, "email");
             } catch (Exception e) {
@@ -535,7 +572,7 @@ private void filterOnClick(){
             try {
                 System.out.println(event.getOldValue());
                 User user = event.getRowValue();
-                user.setLogin(Validate.validateAndConvertString(event.getNewValue(),"Login"));
+                user.setLogin(Validate.validateAndConvertString(event.getNewValue(), "Login"));
                 System.out.println(event.getNewValue());
                 UserManager.updateUser(db, user, "login");
             } catch (Exception e) {
@@ -555,7 +592,7 @@ private void filterOnClick(){
             try {
                 System.out.println(event.getOldValue());
                 User user = event.getRowValue();
-                user.setName(Validate.validateAndConvertString(event.getNewValue(),"First Name"));
+                user.setName(Validate.validateAndConvertString(event.getNewValue(), "First Name"));
                 System.out.println(event.getNewValue());
                 UserManager.updateUser(db, user, "name");
             } catch (Exception e) {
@@ -575,7 +612,7 @@ private void filterOnClick(){
             try {
                 System.out.println(event.getOldValue());
                 User user = event.getRowValue();
-                user.setSurname(Validate.validateAndConvertString(event.getNewValue(),"Last Name"));
+                user.setSurname(Validate.validateAndConvertString(event.getNewValue(), "Last Name"));
                 System.out.println(event.getNewValue());
                 UserManager.updateUser(db, user, "surname");
             } catch (Exception e) {
@@ -635,9 +672,28 @@ private void filterOnClick(){
         contextMenuUsers = new ContextMenu();
         contextMenuUsers.getItems().addAll(usersContextItem1, usersContextItem2);
 
+        usersContextItem1.setOnAction(event -> {
+            FXMLLoader loader = new FXMLLoader(mainApplication.class.getResource("new-user-window.fxml"));
+            try {
+                Parent root = loader.load();
+                NewUserWindow newUserWindowController = loader.getController();
+                newUserWindowController.setDBConnector(db);
+                Scene scene = new Scene(root);
+                Stage primaryStage = new Stage();
+                primaryStage.setScene(scene);
+                primaryStage.showAndWait();
+                updateUsersTable();
+                usersTable.refresh();
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        });
+
         usersContextItem2.setOnAction(event -> {
             try {
+                db.connect();
                 db.delete("users", "id", usersTable.getSelectionModel().getSelectedItem().getId());
+                db.disconnect();
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }
@@ -660,17 +716,20 @@ private void filterOnClick(){
         db = dbConnector;
     }
 
-    public void setUser (User user)
-    {
+    public void setUser(User user) {
         System.out.println(user);
         currentUser = user;
-        if(user.getAccountType() >= 3)
-        {
+        if (user.getAccountType() >= 3) {
             tabs.getTabs().remove(productsTab);
             tabs.getTabs().remove(usersTab);
             tabs.getTabs().remove(orderTab);
         }
-    };
+        if (user.getAccountType() >= 2) {
+            usersAccountTypeColumn.setEditable(false);
+        }
+    }
+
+    ;
 
     public void setPrimaryStage(Stage stage) {
         primaryStage = stage;

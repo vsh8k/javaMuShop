@@ -6,6 +6,7 @@ import java.sql.SQLException;
 
 import com.vsh8k.mushop.model.AccountSystem.Login;
 import com.vsh8k.mushop.model.Database.DBConnector;
+import com.vsh8k.mushop.model.Popup.Confirm;
 import com.vsh8k.mushop.model.Popup.Warning;
 import com.vsh8k.mushop.model.Shop.Media;
 import com.vsh8k.mushop.model.Shop.Product;

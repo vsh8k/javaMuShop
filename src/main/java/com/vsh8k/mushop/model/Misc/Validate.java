@@ -1,5 +1,7 @@
 package com.vsh8k.mushop.model.Misc;
 
+import java.net.URI;
+import java.net.URL;
 import java.sql.Date;
 import java.time.DateTimeException;
 import java.time.LocalDate;
