@@ -319,6 +319,10 @@ public class MainWindow {
                 media.setGenre(genre);
                 media.setEan(ean);
                 media.setMediaType(mediaType);
+                media.setImageURL(imageURL);
+                if (media instanceof Vinyl vinyl) {
+                    vinyl.setVinylSpeed(vinylSpeed);
+                }
                 productList.refresh();
             }
         } catch (Exception e) {
@@ -345,24 +349,23 @@ public class MainWindow {
             lengthField.setText(String.valueOf(media.getTotalLen()));
             mediaGradeSelector.setText(media.getMediaGrade());
             sleeveGradeSelector.setText(media.getSleeveGrade());
-            switch (media) {
-                case CD cd -> {
-                    selectTypeCD();
-                    typeSelectorCD.fire();
+            switch (media.getMediaType()) {
+                    case "CD":
+                        selectTypeCD();
+                        typeSelectorCD.fire();
+                        break;
+                    case "Vinyl":
+                        selectTypeVinyl();
+                        typeSelectorVinyl.fire();
+                        speedSelector.getSelectionModel().select(((Vinyl) media).getVinylSpeed());
+                        break;
+                    case "Cass":
+                        selectTypeCass();
+                        typeSelectorCass.fire();
+                        break;
                 }
-                case Vinyl vinyl -> {
-                    selectTypeVinyl();
-                    typeSelectorVinyl.fire();
-                    speedSelector.getSelectionModel().select(vinyl.getVinylSpeed());
-                    System.out.println(speedSelector.getSelectionModel().getSelectedItem());
-                }
-                case Cass cass -> {
-                    selectTypeCass();
-                    typeSelectorCass.fire();
-                }
-                default -> {
-                }
-            }
+
+
             urlField.setText(media.getImageURL());
             genreField.setText(media.getGenre());
             weightField.setText(Float.toString(media.getWeight()));

@@ -39,7 +39,8 @@ public class Login {
                     String deliveryAddr = resultSet.getString("deliveryAddress");
                     String billingAddr = resultSet.getString("billingAddress");
                     LocalDate birthDate = resultSet.getDate("birthDate").toLocalDate();
-                    usr = new Customer(id, name, sName, uName, email, storedHash, accountLevel, cardDetails, deliveryAddr, billingAddr, birthDate);
+                    String number = resultSet.getString("phone");
+                    usr = new Customer(id, name, sName, uName, email, number, storedHash, accountLevel, cardDetails, deliveryAddr, billingAddr, birthDate);
                     break;
             }
             loginConnector.disconnect();

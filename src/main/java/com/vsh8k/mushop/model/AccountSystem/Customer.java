@@ -22,12 +22,13 @@ public final class Customer extends User {
     private CreditCard card;
 
 
-    public Customer(int id, String name, String surname, String login, String email, String password, int accountType, CreditCard card, String deliveryAddress, String billingAddress, LocalDate birthDate) {
+    public Customer(int id, String name, String surname, String login, String email, String phoneNumber, String password, int accountType, CreditCard card, String deliveryAddress, String billingAddress, LocalDate birthDate) {
         super(id, name, surname, login, password, email, accountType);
         this.deliveryAddress = deliveryAddress;
         this.billingAddress = billingAddress;
         this.birthDate = birthDate;
         this.card = card;
+        this.phoneNumber = phoneNumber;
     }
 
     public Customer(int id, String name, String surname, String login, String email, String password, int accountType) {

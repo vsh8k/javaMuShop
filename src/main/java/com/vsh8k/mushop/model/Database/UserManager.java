@@ -44,11 +44,14 @@ public class UserManager {
                     break;
                 case 2:
                     LocalDate createDate = resultSet.getDate("dateCreated").toLocalDate();
-                    CreditCard cardDetails = null; //FEP resultSet.getString("cc_details");
+                    String rawCardDetails = resultSet.getString("creditCard");
+                    String[] cardDetails = rawCardDetails.split("-");
+                    CreditCard card = new CreditCard(cardDetails[0], cardDetails[1], cardDetails[2], cardDetails[3]);
                     String deliveryAddr = resultSet.getString("deliveryAddress");
                     String billingAddr = resultSet.getString("billingAddress");
                     LocalDate birthDate = resultSet.getDate("birthDate").toLocalDate();
-                    usr = new Customer(id, name, sName, uName, email, storedHash, accountLevel, cardDetails, deliveryAddr, billingAddr, birthDate);
+                    String number = resultSet.getString("number");
+                    usr = new Customer(id, name, sName, uName, email, number, storedHash, accountLevel, card, deliveryAddr, billingAddr, birthDate);
                     break;
             }
             return usr;
@@ -81,11 +84,14 @@ public class UserManager {
                         break;
                     case 3:
                         LocalDate createDate = resultSet.getDate("dateCreated").toLocalDate();
-                        CreditCard cardDetails = null; //FEP resultSet.getString("cc_details");
+                        String rawCardDetails = resultSet.getString("creditCard");
+                        String[] cardDetails = rawCardDetails.split("-");
+                        CreditCard card = new CreditCard(cardDetails[0], cardDetails[1], cardDetails[2], cardDetails[3]); //FEP
                         String deliveryAddr = resultSet.getString("deliveryAddress");
                         String billingAddr = resultSet.getString("billingAddress");
                         LocalDate birthDate = resultSet.getDate("birthDate").toLocalDate();
-                        usr = new Customer(id, name, sName, uName, email, storedHash, accountLevel, cardDetails, deliveryAddr, billingAddr, birthDate);
+                        String number = resultSet.getString("number");
+                        usr = new Customer(id, name, sName, uName, email, number, storedHash, accountLevel, card, deliveryAddr, billingAddr, birthDate);
                         break;
                 }
                 if (usr != null) {
@@ -148,6 +154,7 @@ public class UserManager {
         Date birthDate = null;
         String ccDetails = null;
         if (user instanceof Customer) {
+            System.out.println("USER ADDED");
             Customer cust = (Customer) user;
             phoneNumber = cust.getPhoneNumber();
             deliveryAddr = cust.getDeliveryAddress();

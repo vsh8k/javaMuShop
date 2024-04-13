@@ -110,7 +110,7 @@ public class RegistrationWindow {
             if(!eulaCheck.isSelected()) {
                 throw new Validate.ValidationException("To create an Account you need to accept the EULA");
             }
-            User user = new Customer(0, fName, lName, login, email, Hash.createHash(pass), 3, card, null, addreString, bDateField.getValue());
+            User user = new Customer(0, fName, lName, login, email, number, Hash.createHash(pass), 3, card, null, addreString, bDateField.getValue());
             try {
                 UserManager.addUserToDB(db, user);
             } catch (SQLException e) {
