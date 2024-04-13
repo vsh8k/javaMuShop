@@ -30,6 +30,9 @@ import javafx.scene.control.cell.ComboBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldListCell;
 import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import lombok.SneakyThrows;
 
@@ -350,20 +353,20 @@ public class MainWindow {
             mediaGradeSelector.setText(media.getMediaGrade());
             sleeveGradeSelector.setText(media.getSleeveGrade());
             switch (media.getMediaType()) {
-                    case "CD":
-                        selectTypeCD();
-                        typeSelectorCD.fire();
-                        break;
-                    case "Vinyl":
-                        selectTypeVinyl();
-                        typeSelectorVinyl.fire();
-                        speedSelector.getSelectionModel().select(((Vinyl) media).getVinylSpeed());
-                        break;
-                    case "Cass":
-                        selectTypeCass();
-                        typeSelectorCass.fire();
-                        break;
-                }
+                case "CD":
+                    selectTypeCD();
+                    typeSelectorCD.fire();
+                    break;
+                case "Vinyl":
+                    selectTypeVinyl();
+                    typeSelectorVinyl.fire();
+                    speedSelector.getSelectionModel().select(((Vinyl) media).getVinylSpeed());
+                    break;
+                case "Cass":
+                    selectTypeCass();
+                    typeSelectorCass.fire();
+                    break;
+            }
 
 
             urlField.setText(media.getImageURL());
@@ -507,6 +510,93 @@ public class MainWindow {
     //</editor-fold>
 
     //<editor-fold desc="Tab: Shop">
+    private ArrayList<Product> storeProducts = new ArrayList<>();
+    @FXML
+    private ListView<Product> storeProductList;
+    @FXML
+    private TextField storeProductsSearchBar;
+    @FXML
+    private Text storeEanText;
+    @FXML
+    private Text storeStockText;
+    @FXML
+    private Text storePriceText;
+    @FXML
+    private Text storeArtistText;
+    @FXML
+    private Text storeAlbumText;
+    @FXML
+    private Text storeYearText;
+    @FXML
+    private Text storeLabelText;
+    @FXML
+    private Text storeTracksText;
+    @FXML
+    private Text storeGenreText;
+    @FXML
+    private Text storeGradeText;
+    @FXML
+    private Text storeETCText;
+    @FXML
+    private ImageView productImageView;
+
+
+
+
+    @FXML
+    private void loadStoreProductData() {
+
+        Product product = storeProductList.getSelectionModel().getSelectedItem();
+        if (product instanceof Media) {
+            Media media = (Media) product;
+            storeYearText.setText("Artist: " + String.valueOf(media.getReleaseYear()));
+            storeArtistText.setText("Album: " + media.getArtist());
+            storeAlbumText.setText("Release year: " + media.getAlbum());
+            storeLabelText.setText("Label: " + media.getLabel());
+            storeTracksText.setText("Track amount: " + Integer.toString(media.getTrackQty()));
+            //mediaGradeSelector.setText(media.getMediaGrade());
+            //sleeveGradeSelector.setText(media.getSleeveGrade());
+            //Media tpyer
+
+
+
+            //urlField.setText(media.getImageURL());
+            productImageView.setImage(new Image(media.getImageURL()));
+            storeGenreText.setText("Genre: " + media.getGenre());
+            //weightField.setText(Float.toString(media.getWeight()));
+            //discountField.setText(Integer.toString(media.getDiscount()));
+            storeEanText.setText("Ean: " + media.getEan());
+            storeStockText.setText("Stock: " + Integer.toString(media.getQty()));
+            storePriceText.setText("Price: " + Float.toString(media.getPrice()));//Su discount bus
+        }
+    }
+
+    @SneakyThrows
+    @FXML
+    private void updateStoreProductList() {
+        if (db != null) {
+            storeProductList.getItems().clear();
+            String searchString = storeProductsSearchBar.getText();
+            if (searchString.isEmpty()) {
+                storeProducts = ProductManager.getAllProductsFromDB(db);
+            } else {
+                storeProducts = ProductManager.searchProductsFromDB(db, searchString);
+            }
+            for (Product product : storeProducts) {
+                storeProductList.getItems().add(product);
+                product.getCommentsFromDB(db);
+                //KOMENTARAI IS DB
+            }
+            System.out.println("Store Product list updated");
+        }
+    }
+
+    @FXML
+    private void addToCartOnClick() {
+
+    }
+
+
     //</editor-fold>
 
     //<editor-fold desc="Tab: Cart">
@@ -717,6 +807,7 @@ public class MainWindow {
     //<editor-fold desc="Set methods">
     public void setDBConnector(DBConnector dbConnector) {
         db = dbConnector;
+        updateStoreProductList();
     }
 
     public void setUser(User user) {
