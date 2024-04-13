@@ -552,7 +552,7 @@ public class MainWindow {
             try {
                 System.out.println(event.getOldValue());
                 User user = event.getRowValue();
-                user.setEmail(Validate.validateEmail(event.getNewValue(), "Email"));
+                user.setEmail(Validate.validateEmail(event.getNewValue(), "Email", db));
                 System.out.println(event.getNewValue());
                 UserManager.updateUser(db, user, "email");
             } catch (Exception e) {
@@ -572,7 +572,7 @@ public class MainWindow {
             try {
                 System.out.println(event.getOldValue());
                 User user = event.getRowValue();
-                user.setLogin(Validate.validateAndConvertString(event.getNewValue(), "Login"));
+                user.setLogin(Validate.validateLogin(event.getNewValue(), "Login", db));
                 System.out.println(event.getNewValue());
                 UserManager.updateUser(db, user, "login");
             } catch (Exception e) {

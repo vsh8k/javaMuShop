@@ -35,8 +35,14 @@ public class LoginWindow {
     @FXML
     private TextField passField;
 
+    DBConnector loginConnector;
+
     @FXML
     private void initialize() {
+        String dbUrl = "jdbc:mysql://localhost:3306/products";
+        String dbUsername = "root";
+        String dbPassword = "";
+        loginConnector = new DBConnector(dbUrl, dbUsername, dbPassword);
         createAccount = buildCreateAccountLink();
         registerText.getChildren().addAll(new Text("Don't have an account? "), createAccount);
     }
@@ -46,10 +52,6 @@ public class LoginWindow {
         System.out.println("LOGIN");
         User user = null;
         try {
-            String dbUrl = "jdbc:mysql://localhost:3306/products";
-            String dbUsername = "root";
-            String dbPassword = "";
-            DBConnector loginConnector = new DBConnector(dbUrl, dbUsername, dbPassword);
             user = Login.validateAndGetUser(unameField.getText(), passField.getText(), loginConnector);
             FXMLLoader loader = new FXMLLoader(mainApplication.class.getResource("main-window.fxml"));
             try {
@@ -80,6 +82,7 @@ public class LoginWindow {
             try {
                 Parent root = loader.load();
                 RegistrationWindow registrationWindowController = loader.getController();
+                registrationWindowController.setDBConnector(loginConnector);
                 Scene scene = new Scene(root);
                 Stage primaryStage = (Stage) unameField.getScene().getWindow();
                 primaryStage.setScene(scene);

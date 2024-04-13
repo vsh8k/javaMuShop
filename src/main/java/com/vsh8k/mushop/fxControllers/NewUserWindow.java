@@ -42,8 +42,8 @@ public class NewUserWindow {
         try {
             String name = Validate.validateAndConvertString(fNameField.getText(), "First Name");
             String sName = Validate.validateAndConvertString(lNameField.getText(), "Last Name");
-            login = Validate.validateAndConvertString(loginField.getText(), "Login");
-            String email = Validate.validateEmail(emailField.getText(), "Email");
+            login = Validate.validateLogin(loginField.getText(), "Login", db);
+            String email = Validate.validateEmail(emailField.getText(), "Email", db);
             String email1 = Validate.validateEquals(email, emailField1.getText(), "Email");
             String pass = Validate.validatePassword(passField.getText(), "Password");
             String pass1 = Validate.validateEquals(pass, passField1.getText(), "Password");

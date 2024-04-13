@@ -3,6 +3,7 @@ package com.vsh8k.mushop.model.Database;
 import com.vsh8k.mushop.model.AccountSystem.Customer;
 import com.vsh8k.mushop.model.AccountSystem.Manager;
 import com.vsh8k.mushop.model.AccountSystem.User;
+import com.vsh8k.mushop.model.Shop.CreditCard;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import lombok.SneakyThrows;
@@ -43,7 +44,7 @@ public class UserManager {
                     break;
                 case 2:
                     LocalDate createDate = resultSet.getDate("dateCreated").toLocalDate();
-                    String cardDetails = ""; //resultSet.getString("cc_details");
+                    CreditCard cardDetails = null; //FEP resultSet.getString("cc_details");
                     String deliveryAddr = resultSet.getString("deliveryAddress");
                     String billingAddr = resultSet.getString("billingAddress");
                     LocalDate birthDate = resultSet.getDate("birthDate").toLocalDate();
@@ -80,7 +81,7 @@ public class UserManager {
                         break;
                     case 3:
                         LocalDate createDate = resultSet.getDate("dateCreated").toLocalDate();
-                        String cardDetails = ""; //resultSet.getString("cc_details");
+                        CreditCard cardDetails = null; //FEP resultSet.getString("cc_details");
                         String deliveryAddr = resultSet.getString("deliveryAddress");
                         String billingAddr = resultSet.getString("billingAddress");
                         LocalDate birthDate = resultSet.getDate("birthDate").toLocalDate();
@@ -145,15 +146,17 @@ public class UserManager {
         String deliveryAddr = null;
         String billingAddr = null;
         Date birthDate = null;
+        String ccDetails = null;
         if (user instanceof Customer) {
             Customer cust = (Customer) user;
             phoneNumber = cust.getPhoneNumber();
             deliveryAddr = cust.getDeliveryAddress();
             billingAddr = cust.getBillingAddress();
+            ccDetails = cust.getCard().toString();
             birthDate = Date.valueOf(cust.getBirthDate());
         }
-        String[] cols = {"name", "surname", "login", "email", "phone", "hash", "account_level", "deliveryAddress", "billingAddress", "birthDate"};
-        Object[] vals = {name, surname, login, email, phoneNumber, hash, accountType, deliveryAddr, billingAddr, birthDate};
+        String[] cols = {"name", "surname", "login", "email", "phone", "hash", "account_level", "deliveryAddress", "billingAddress", "creditCard", "birthDate"};
+        Object[] vals = {name, surname, login, email, phoneNumber, hash, accountType, deliveryAddr, billingAddr, ccDetails, birthDate};
         db.connect();
         db.insert("users", cols, vals);
         db.disconnect();

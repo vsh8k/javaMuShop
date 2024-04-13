@@ -3,6 +3,8 @@ package com.vsh8k.mushop.model.Misc;
 import java.net.URI;
 import java.net.URL;
 import java.sql.Date;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.Year;
@@ -10,6 +12,7 @@ import java.sql.Time;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.vsh8k.mushop.model.Database.DBConnector;
 import com.vsh8k.mushop.model.Popup.Warning;
 
 public class Validate {
@@ -43,8 +46,7 @@ public class Validate {
         int year = Integer.parseInt(input);
         if (year < 1900 || year > Year.now().getValue()) {
             throw new ValidationException("Invalid year format in " + fieldName + " field");
-        }
-        else return year;
+        } else return year;
     }
 
     public static Time validateAndConvertTime(String input, String fieldName) throws ValidationException {
@@ -86,13 +88,12 @@ public class Validate {
         if (date == null) {
             throw new ValidationException(fieldName + " field is empty");
         }
-        if(date.isAfter(LocalDate.now().minusYears(14))) {
+        if (date.isAfter(LocalDate.now().minusYears(14))) {
             throw new ValidationException("You're not old enough to create an account");
-        }
-        else return Date.valueOf(date);
+        } else return Date.valueOf(date);
     }
 
-    public static String validatePhoneNumber(String number, String fieldName) throws ValidationException {
+    public static String validatePhoneNumber(String number, String fieldName, DBConnector db) throws ValidationException {
         if (isEmptyString(number)) {
             throw new ValidationException(fieldName + " field is empty");
         }
@@ -101,8 +102,24 @@ public class Validate {
         Matcher matcher = pattern.matcher(number);
         if (!matcher.find()) {
             throw new ValidationException("Invalid phone number");
+        } else {
+            try {
+                db.connect();
+                ResultSet users = db.query("SELECT phone FROM users WHERE phone = '" + number + "'");
+                if (users.next()) {
+                    db.disconnect();
+                    throw new ValidationException("Another user already exists with this number");
+                } else {
+                    db.disconnect();
+                    return number;
+                }
+
+
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
         }
-        else return number;
+
     }
 
     public static String validatePassword(String password, String fieldName) throws ValidationException {
@@ -120,22 +137,51 @@ public class Validate {
         Matcher matcher = pattern.matcher(password);
         if (!matcher.find()) {
             throw new ValidationException("Password must contain at least one capital letter and a number");
-        }
-        else return password;
+        } else return password;
     }
 
-    public static String validateEmail(String email, String fieldName) throws ValidationException {
+    public static String validateEmail(String email, String fieldName, DBConnector db) throws ValidationException {
         if (isEmptyString(email)) {
             throw new ValidationException(fieldName + " field is empty");
         }
         String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$";
         Pattern pattern = Pattern.compile(emailRegex);
         Matcher matcher = pattern.matcher(email);
-        if(matcher.matches()) {
-            return email;
-        }
-        else {
+        if (!matcher.find()) {
             throw new ValidationException("Invalid email format in " + fieldName + " field");
+        } else {
+            try {
+                db.connect();
+                ResultSet users = db.query("SELECT email FROM users WHERE email = '" + email + "'");
+                if (users.next()) {
+                    db.disconnect();
+                    throw new ValidationException("Another user already exists with this email");
+                } else {
+                    db.disconnect();
+                    return email;
+                }
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
+    public static String validateLogin(String login, String fieldName, DBConnector db) throws ValidationException {
+        if (isEmptyString(login)) {
+            throw new ValidationException(fieldName + " field is empty");
+        }
+        try {
+            db.connect();
+            ResultSet users = db.query("SELECT login FROM users WHERE login = '" + login + "'");
+            if (users.next()) {
+                db.disconnect();
+                throw new ValidationException("Another user already exists with this login");
+            } else {
+                db.disconnect();
+                return login;
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -146,10 +192,9 @@ public class Validate {
         String ccRegex = "^[0-9]{16}$";
         Pattern pattern = Pattern.compile(ccRegex);
         Matcher matcher = pattern.matcher(ccNumber);
-        if(matcher.matches()) {
+        if (matcher.matches()) {
             return ccNumber;
-        }
-        else {
+        } else {
             throw new ValidationException("Invalid format in " + fieldName + " field");
         }
     }
@@ -161,10 +206,9 @@ public class Validate {
         String cvvRegex = "^[0-9]{3,4}$";
         Pattern pattern = Pattern.compile(cvvRegex);
         Matcher matcher = pattern.matcher(cvv);
-        if(matcher.matches()) {
+        if (matcher.matches()) {
             return cvv;
-        }
-        else {
+        } else {
             throw new ValidationException("Invalid format in " + fieldName + " field");
         }
     }
@@ -177,22 +221,19 @@ public class Validate {
         Pattern pattern = Pattern.compile(yymmRegex);
         Matcher matcher = pattern.matcher(yy);
         Matcher matcher1 = pattern.matcher(mm);
-        if(matcher.matches() && matcher1.matches()) {
+        if (matcher.matches() && matcher1.matches()) {
             return yy + "/" + mm;
-        }
-        else {
+        } else {
             throw new ValidationException("Invalid format in " + fieldName + " field");
         }
     }
 
     public static String validateEquals(String s1, String s2, String fieldName) throws ValidationException {
-        if(isEmptyString(s2)) {
+        if (isEmptyString(s2)) {
             throw new ValidationException(fieldName + " field is empty");
-        }
-        else if (!s1.equals(s2)) {
+        } else if (!s1.equals(s2)) {
             throw new ValidationException(fieldName + " fields don't match");
-        }
-        else {
+        } else {
             return s2;
         }
     }

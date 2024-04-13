@@ -4,6 +4,7 @@ import java.sql.ResultSet;
 import java.time.LocalDate;
 
 import com.vsh8k.mushop.model.Database.DBConnector;
+import com.vsh8k.mushop.model.Shop.CreditCard;
 
 public class Login {
 
@@ -34,7 +35,7 @@ public class Login {
                     break;
                 case 3:
                     LocalDate createDate = resultSet.getDate("dateCreated").toLocalDate();
-                    String cardDetails = ""; //resultSet.getString("cc_details");
+                    CreditCard cardDetails = null; // FEP resultSet.getString("cc_details");
                     String deliveryAddr = resultSet.getString("deliveryAddress");
                     String billingAddr = resultSet.getString("billingAddress");
                     LocalDate birthDate = resultSet.getDate("birthDate").toLocalDate();
