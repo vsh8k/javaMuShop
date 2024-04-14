@@ -84,9 +84,10 @@ public class LoginWindow {
                 RegistrationWindow registrationWindowController = loader.getController();
                 registrationWindowController.setDBConnector(loginConnector);
                 Scene scene = new Scene(root);
-                Stage primaryStage = (Stage) unameField.getScene().getWindow();
+                Stage primaryStage = new Stage();
                 primaryStage.setScene(scene);
-                primaryStage.show();
+                primaryStage.setTitle("MuShop v0.1 - Registration");
+                primaryStage.showAndWait();
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }

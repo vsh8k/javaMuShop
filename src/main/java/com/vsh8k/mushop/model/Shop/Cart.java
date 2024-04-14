@@ -15,6 +15,14 @@ public class Cart{
     private int id;
     private List<Product> productList;
     private Customer customer;
-    private LocalDate dateCreated;
+
+    public void addProduct(Product product){
+        productList.add(product);
+        System.out.println(productList.size());
+    }
+
+    public void removeProduct(Product product){
+        productList.remove(product);
+        System.out.println(productList.size());
+    }
 }
-//Chat bus User:Message-User:Message

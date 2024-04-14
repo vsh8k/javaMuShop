@@ -11,6 +11,7 @@ module com.javacourse.courseprojectfx {
     requires java.smartcardio;
     requires java.compiler;
     requires jdk.compiler;
+    requires atlantafx.base;
     requires org.hibernate.orm.core;
 
     opens com.vsh8k.mushop to javafx.fxml;

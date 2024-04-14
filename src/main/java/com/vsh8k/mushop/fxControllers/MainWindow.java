@@ -534,40 +534,79 @@ public class MainWindow {
     @FXML
     private Text storeGenreText;
     @FXML
-    private Text storeGradeText;
+    private Text storeGradeTextS;
     @FXML
-    private Text storeETCText;
+    private Text storeGradeTextM;
+    @FXML
+    private Text storeMediaText;
     @FXML
     private ImageView productImageView;
-
-
-
+    @FXML
+    private ComboBox storeQtySelector;
+    @FXML
+    private Button storeAddButton;
 
     @FXML
     private void loadStoreProductData() {
 
         Product product = storeProductList.getSelectionModel().getSelectedItem();
-        if (product instanceof Media) {
-            Media media = (Media) product;
+        if (product instanceof Media media) {
             storeYearText.setText("Artist: " + String.valueOf(media.getReleaseYear()));
             storeArtistText.setText("Album: " + media.getArtist());
             storeAlbumText.setText("Release year: " + media.getAlbum());
             storeLabelText.setText("Label: " + media.getLabel());
             storeTracksText.setText("Track amount: " + Integer.toString(media.getTrackQty()));
-            //mediaGradeSelector.setText(media.getMediaGrade());
-            //sleeveGradeSelector.setText(media.getSleeveGrade());
-            //Media tpyer
+            storeGradeTextS.setText("Grade (Sleeve): " + media.getSleeveGrade());
+            storeGradeTextM.setText("Grade (Media): " + media.getMediaGrade());
+            //Media type
+            if(media instanceof Vinyl vinyl)
+            {
+                switch (vinyl.getVinylSpeed()) {
+                    case SPEED_33 -> storeMediaText.setText("33 1/3 rpm Vinyl");
+                    case SPEED_45 -> storeMediaText.setText("45 rpm Vinyl");
+                    case SPEED_78 -> storeMediaText.setText("78 rpm Vinyl");
+                }
 
-
+            }
+            else if(media instanceof CD)
+            {
+                storeMediaText.setText("CD");
+            }
+            else if(media instanceof Cass)
+            {
+                storeMediaText.setText("Cassette");
+            }
 
             //urlField.setText(media.getImageURL());
-            productImageView.setImage(new Image(media.getImageURL()));
+            try {
+                productImageView.setImage(new Image(media.getImageURL()));
+            } catch (Exception e) {
+                productImageView.setImage(new Image("https://t4.ftcdn.net/jpg/00/62/08/95/360_F_62089548_hUsAVnxJKkwmMpqgalL4zhwXjwTqP4Vx.jpg")); //Fallback image
+            }
             storeGenreText.setText("Genre: " + media.getGenre());
-            //weightField.setText(Float.toString(media.getWeight()));
-            //discountField.setText(Integer.toString(media.getDiscount()));
             storeEanText.setText("Ean: " + media.getEan());
-            storeStockText.setText("Stock: " + Integer.toString(media.getQty()));
-            storePriceText.setText("Price: " + Float.toString(media.getPrice()));//Su discount bus
+            if (media.getQty() > 0) {
+                storeStockText.setText("Stock: " + Integer.toString(media.getQty()));
+                storeQtySelector.setDisable(false);
+                storeAddButton.setDisable(false);
+            } else {
+                storeStockText.setText("Out of stock");
+                storeStockText.setStyle("-fx-text-fill: red;");
+                storeQtySelector.setDisable(true);
+                storeAddButton.setDisable(true);
+            }
+            if(media.getDiscount() > 0) {
+                storePriceText.setText("Price: " + Float.toString(media.getPrice()) + "€ -" + Float.toString(media.getDiscount()) + "%");
+            }
+            else {
+                storePriceText.setText("Price: " + Float.toString(media.getPrice()) + "€");
+            }
+            //Qty. Selector Magic
+            storeQtySelector.getItems().clear();
+            for (int i = 0; i < media.getQty(); i++) {
+                storeQtySelector.getItems().add(i + 1);
+            }
+            storeQtySelector.getSelectionModel().select(0);
         }
     }
 
@@ -588,6 +627,10 @@ public class MainWindow {
                 //KOMENTARAI IS DB
             }
             System.out.println("Store Product list updated");
+        }
+        if (!storeProductList.getItems().isEmpty()) {
+            storeProductList.getSelectionModel().select(0);
+            loadStoreProductData();
         }
     }
 
@@ -799,6 +842,7 @@ public class MainWindow {
         filterSelect.getItems().setAll(UserFilter.values());
 
         filterSelect.getSelectionModel().select(0);
+        //STORE
 
         System.out.println("init!");
     }
