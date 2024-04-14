@@ -1,22 +1,20 @@
 package com.vsh8k.mushop.model.Shop;
 
 import com.vsh8k.mushop.model.AccountSystem.Customer;
-import com.vsh8k.mushop.model.AccountSystem.Manager;
 import com.vsh8k.mushop.model.Misc.Validate;
+import com.vsh8k.mushop.model.Misc.ProductPair;
 import javafx.util.Pair;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.io.Serializable;
-import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.List;
 
 @Getter
 @Setter
 public class Cart {
     private int id;
-    private ArrayList<Pair<Product, Integer>> productList = new ArrayList<>();
+
+    private ArrayList<ProductPair<Product, Integer>> productList = new ArrayList<>();
 
     private Customer customer;
 
@@ -27,12 +25,12 @@ public class Cart {
                     throw new Validate.ValidationException("Selected amount exceeds available amount");
                 }
                 int index = productList.indexOf(pair);
-                productList.set(index, new Pair<>(product, (pair.getValue() + qty)));
+                productList.set(index, new ProductPair<>(product, (pair.getValue() + qty)));
                 System.out.println("SUMA");
                 return;
             }
         }
-        productList.add(new Pair<>(product, qty));
+        productList.add(new ProductPair<>(product, qty));
     }
 
     public void changeProductQty(Product product, int qty) {

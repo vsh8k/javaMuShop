@@ -146,6 +146,7 @@ public class ProductManager {
 
     @SneakyThrows //Written with sneaky
     public static Product getProductById(int id, DBConnector db) {
+        db.connect();
         ResultSet resultSet = db.query("SELECT * FROM media WHERE id = " + id);
         if (resultSet.next()) {
             String title = resultSet.getString("title");

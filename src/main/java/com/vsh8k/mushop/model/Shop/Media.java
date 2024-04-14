@@ -26,9 +26,10 @@ public abstract class Media extends Product {
     private String sleeveGrade;
     private String genre;
     private String mediaType;
-@Override
+
+    @Override
     public String toString(){
-        return id + " : " + this.artist + " - " + this.album;
+        return this.artist + " - " + this.album;
     }
 
     public Media(int id, String title, String description, int qty, float weight, float price, int discount, String artist, String album, int releaseYear, String label, Time totalLen, short trackQty, String mediaGrade, String sleeveGrade, String genre, String ean, String mediaType, String imageURL) {

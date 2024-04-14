@@ -44,6 +44,7 @@ import java.net.URL;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Time;
+import java.text.DecimalFormat;
 import java.time.Year;
 import java.util.ArrayList;
 import java.util.List;
@@ -651,15 +652,66 @@ public class MainWindow {
     //<editor-fold desc="Tab: Cart">
     @FXML
     ListView<Pair<Product, Integer>> cartProductList;
+    @FXML
+    TextField cartDeliveryAddressField;
+    @FXML
+    TextField cartCityField;
+    @FXML
+    TextField cartPostcodeField;
+    @FXML
+    ComboBox<Shipping> shippingSelector;
+    @FXML
+    Text cartProductPrice;
+    @FXML
+    Text cartVATPrice;
+    @FXML
+    Text cartDeliveryPrice;
+    @FXML
+    Text cartTotalPrice;
+
+    private float cartPrice;
 
     @FXML
     private void updateCartList() {
         System.out.println("Cart List Updated");
+        shippingSelector.getItems().clear();
+        for (Shipping service : Shipping.getServices(db)) {
+            shippingSelector.getItems().add(service);
+        }
+        shippingSelector.getSelectionModel().select(0);
         cartProductList.getItems().clear();
         if (currentUser instanceof Customer cust) {
             Cart cart = cust.getCart();
             for (Pair<Product, Integer> pair : cart.getProductList()) {
                 cartProductList.getItems().add(pair);
+            }
+        }
+        cartUpdatePrices();
+    }
+
+    @FXML
+    private void cartUpdatePrices() {
+        float productPrice = 0;
+        for (Pair<Product, Integer> pair : cartProductList.getItems()) {
+            productPrice += (pair.getKey().getPrice() * pair.getValue());
+        }
+        float VAT = productPrice * 0.21f;
+        cartProductPrice.setText("Products: " + new DecimalFormat("#.##").format(productPrice) + "€");
+        cartVATPrice.setText("VAT (21%): " + new DecimalFormat("#.##").format(VAT) + "€");
+        float deliveryPrice = shippingSelector.getSelectionModel().getSelectedItem().getPrice();
+        cartDeliveryPrice.setText("Delivery Fees: " + new DecimalFormat("#.##").format(deliveryPrice) + "€");
+        cartTotalPrice.setText("Order Total: " + new DecimalFormat("#.##").format(productPrice + deliveryPrice + VAT) + "€");
+
+    }
+
+
+    @FXML
+    private void placeOrderOnClick() {
+        if (currentUser instanceof Customer cust) {
+            try {
+                Validate.validateCart(cust.getCart(), db);
+            } catch (Validate.ValidationException e) {
+                Warning.display("Can't place order", e.getMessage());
             }
         }
     }

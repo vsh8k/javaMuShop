@@ -14,6 +14,11 @@ import java.util.regex.Pattern;
 
 import com.vsh8k.mushop.model.Database.DBConnector;
 import com.vsh8k.mushop.model.Popup.Warning;
+import com.vsh8k.mushop.model.Shop.Cart;
+import com.vsh8k.mushop.model.Shop.Media;
+import com.vsh8k.mushop.model.Shop.Product;
+import javafx.util.Pair;
+import lombok.SneakyThrows;
 
 public class Validate {
 
@@ -236,6 +241,23 @@ public class Validate {
         } else {
             return s2;
         }
+    }
+
+    @SneakyThrows
+    public static void validateCart(Cart cart, DBConnector db) throws ValidationException {
+        db.connect();
+        for (Pair<Product, Integer> pair : cart.getProductList()) {
+            int productId = pair.getKey().getId();
+            ResultSet productQtyInDB = db.query("SELECT qty FROM media WHERE id = " + productId);
+            if (productQtyInDB.next()) {
+                int productQty = productQtyInDB.getInt("qty");
+                if(productQty < pair.getValue()) {
+                    db.disconnect();
+                    throw new ValidationException("Stock of the product " + pair.getKey().toString() + " is less than the requested amount");
+                }
+            }
+        }
+        db.disconnect();
     }
 
     public static class ValidationException extends Exception {
