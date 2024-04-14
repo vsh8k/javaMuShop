@@ -1,7 +1,9 @@
 package com.vsh8k.mushop.model.AccountSystem;
 
+import com.vsh8k.mushop.model.Misc.Validate;
 import com.vsh8k.mushop.model.Shop.Cart;
 import com.vsh8k.mushop.model.Shop.CreditCard;
+import com.vsh8k.mushop.model.Shop.Product;
 import jakarta.persistence.criteria.Order;
 import lombok.Getter;
 import lombok.Setter;
@@ -33,6 +35,11 @@ public final class Customer extends User {
 
     public Customer(int id, String name, String surname, String login, String email, String password, int accountType) {
         super(id, name, surname, login, password, email, accountType);
+    }
+
+    public void addToCart(Product product, int qty) throws Validate.ValidationException {
+        this.cart.addProduct(product, qty);
+        System.out.println(product.toString() + " added to cart");
     }
 
     @Override

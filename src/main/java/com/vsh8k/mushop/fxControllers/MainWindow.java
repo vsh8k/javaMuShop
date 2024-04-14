@@ -1,9 +1,11 @@
 package com.vsh8k.mushop.fxControllers;
 
 import com.vsh8k.mushop.mainApplication;
+import com.vsh8k.mushop.model.AccountSystem.Customer;
 import com.vsh8k.mushop.model.AccountSystem.Hash;
 import com.vsh8k.mushop.model.AccountSystem.Manager;
 import com.vsh8k.mushop.model.AccountSystem.User;
+import com.vsh8k.mushop.model.Database.CartManager;
 import com.vsh8k.mushop.model.Database.DBConnector;
 import com.vsh8k.mushop.model.Database.ProductManager;
 import com.vsh8k.mushop.model.Database.UserManager;
@@ -34,6 +36,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import javafx.util.Pair;
 import lombok.SneakyThrows;
 
 import java.io.IOException;
@@ -559,21 +562,16 @@ public class MainWindow {
             storeGradeTextS.setText("Grade (Sleeve): " + media.getSleeveGrade());
             storeGradeTextM.setText("Grade (Media): " + media.getMediaGrade());
             //Media type
-            if(media instanceof Vinyl vinyl)
-            {
+            if (media instanceof Vinyl vinyl) {
                 switch (vinyl.getVinylSpeed()) {
                     case SPEED_33 -> storeMediaText.setText("33 1/3 rpm Vinyl");
                     case SPEED_45 -> storeMediaText.setText("45 rpm Vinyl");
                     case SPEED_78 -> storeMediaText.setText("78 rpm Vinyl");
                 }
 
-            }
-            else if(media instanceof CD)
-            {
+            } else if (media instanceof CD) {
                 storeMediaText.setText("CD");
-            }
-            else if(media instanceof Cass)
-            {
+            } else if (media instanceof Cass) {
                 storeMediaText.setText("Cassette");
             }
 
@@ -595,10 +593,9 @@ public class MainWindow {
                 storeQtySelector.setDisable(true);
                 storeAddButton.setDisable(true);
             }
-            if(media.getDiscount() > 0) {
+            if (media.getDiscount() > 0) {
                 storePriceText.setText("Price: " + Float.toString(media.getPrice()) + "€ -" + Float.toString(media.getDiscount()) + "%");
-            }
-            else {
+            } else {
                 storePriceText.setText("Price: " + Float.toString(media.getPrice()) + "€");
             }
             //Qty. Selector Magic
@@ -636,13 +633,36 @@ public class MainWindow {
 
     @FXML
     private void addToCartOnClick() {
-
+        int qty = (int) storeQtySelector.getSelectionModel().getSelectedItem();
+        try {
+            if (currentUser instanceof Customer cust) {
+                cust.addToCart(storeProductList.getSelectionModel().getSelectedItem(), qty);
+                CartManager.updateCartInDB(cust, db);
+            }
+        } catch (Validate.ValidationException e) {
+            Warning.display("Can't add to cart", e.getMessage());
+        }
+        //Susyncinam su DB
     }
 
 
     //</editor-fold>
 
     //<editor-fold desc="Tab: Cart">
+    @FXML
+    ListView<Pair<Product, Integer>> cartProductList;
+
+    @FXML
+    private void updateCartList() {
+        System.out.println("Cart List Updated");
+        cartProductList.getItems().clear();
+        if (currentUser instanceof Customer cust) {
+            Cart cart = cust.getCart();
+            for (Pair<Product, Integer> pair : cart.getProductList()) {
+                cartProductList.getItems().add(pair);
+            }
+        }
+    }
     //</editor-fold>
 
     //<editor-fold desc="initialize()">
@@ -845,6 +865,8 @@ public class MainWindow {
         //STORE
 
         System.out.println("init!");
+
+
     }
     //</editor-fold>
 
@@ -861,6 +883,11 @@ public class MainWindow {
             tabs.getTabs().remove(productsTab);
             tabs.getTabs().remove(usersTab);
             tabs.getTabs().remove(orderTab);
+            //CART
+            if (currentUser instanceof Customer cust) {
+                System.out.println("User cart GOT");
+                cust.setCart(CartManager.getCartFromDB(cust, db));
+            }
         }
         if (user.getAccountType() >= 2) {
             usersAccountTypeColumn.setEditable(false);
