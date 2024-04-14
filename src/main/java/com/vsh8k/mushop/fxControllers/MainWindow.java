@@ -674,11 +674,13 @@ public class MainWindow {
     @FXML
     private void updateCartList() {
         System.out.println("Cart List Updated");
+        //Shipping selector
         shippingSelector.getItems().clear();
         for (Shipping service : Shipping.getServices(db)) {
             shippingSelector.getItems().add(service);
         }
         shippingSelector.getSelectionModel().select(0);
+        //
         cartProductList.getItems().clear();
         if (currentUser instanceof Customer cust) {
             Cart cart = cust.getCart();
@@ -686,8 +688,35 @@ public class MainWindow {
                 cartProductList.getItems().add(pair);
             }
         }
+        cartProductList.setCellFactory(param -> new ListCell<Pair<Product, Integer>>() {
+            private final Button button = new Button("Action");
+
+            {
+                button.setOnAction(event -> {
+                    Pair<Product, Integer> item = getItem();
+                    if (item != null) {
+                        // Handle button click event here
+                        System.out.println("Button clicked for: " + item.getKey());
+                    }
+                });
+            }
+
+            @Override
+            protected void updateItem(Pair<Product, Integer> item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setText(null);
+                    setGraphic(null);
+                } else {
+                    setText(item.getKey().toString()); // Set text to item representation
+                    setGraphic(button);
+                }
+            }
+        });
+
         cartUpdatePrices();
     }
+
 
     @FXML
     private void cartUpdatePrices() {
